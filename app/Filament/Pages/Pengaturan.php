@@ -38,6 +38,7 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
         $user = Auth::user();
 
         $this->form->fill([
+            'name' => $user->name,
             'nama_lengkap' => $user->nama_lengkap,
             'email'        => $user->email,
             'no_telp'      => $user->no_telp,
@@ -63,6 +64,10 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
                             ->maxSize(2048)
                             ->columnSpanFull(),
 
+                        TextInput::make('name')
+                            ->label('Username')
+                            ->required(),
+
                         TextInput::make('nama_lengkap')
                             ->label('Nama Lengkap')
                             ->required(),
@@ -73,8 +78,7 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
 
                         TextInput::make('no_telp')
                             ->label('No. Telepon')
-                            ->tel()
-                            ->columnSpanFull(),
+                            ->tel(),
 
                     ]),
 
