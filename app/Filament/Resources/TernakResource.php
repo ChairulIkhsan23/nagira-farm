@@ -117,11 +117,11 @@ class TernakResource extends Resource
                                 Select::make('status_aktif')
                                     ->required()
                                     ->options([
-                                        'Aktif' => 'Aktif',
-                                        'Terjual' => 'Terjual',
-                                        'Mati' => 'Mati',
+                                        'aktif' => 'Aktif',
+                                        'terjual' => 'Terjual',
+                                        'mati' => 'Mati',
                                     ])
-                                    ->default('Aktif')
+                                    ->default('aktif')
                                     ->native(false)
                                     ->columnSpan(1),
                             ]),
