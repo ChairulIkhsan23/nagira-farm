@@ -14,7 +14,7 @@ class EditTernak extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-                ->label('Hapus Pengguna')
+                ->label('Hapus Ternak')
                 ->icon('heroicon-o-trash')
                 ->modalDescription('Apakah Anda yakin ingin menghapus tag ini? Data tidak dapat dikembalikan.')
                 ->modalSubmitActionLabel('Ya, Hapus')
