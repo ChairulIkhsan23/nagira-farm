@@ -17,7 +17,11 @@ class PakanResource extends Resource
 {
     protected static ?string $model = Pakan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
+    protected static ?string $navigationGroup = 'Manajemen Ternak';
+    protected static ?string $navigationLabel = 'Pakan';
+    protected static ?string $modelLabel = 'Pakan';
+    protected static ?string $pluralModelLabel = 'Daftar Pakan';
 
     public static function form(Form $form): Form
     {

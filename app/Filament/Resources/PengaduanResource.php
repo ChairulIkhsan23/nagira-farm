@@ -17,7 +17,11 @@ class PengaduanResource extends Resource
 {
     protected static ?string $model = Pengaduan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-megaphone';
+    protected static ?string $navigationGroup = 'Layanan';
+    protected static ?string $navigationLabel = 'Pengaduan';
+    protected static ?string $modelLabel = 'Pengaduan';
+    protected static ?string $pluralModelLabel = 'Daftar Pengaduan';
 
     public static function form(Form $form): Form
     {

@@ -17,7 +17,11 @@ class TernakResource extends Resource
 {
     protected static ?string $model = Ternak::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationGroup = 'Manajemen Ternak';
+    protected static ?string $navigationLabel = 'Ternak';
+    protected static ?string $modelLabel = 'Ternak';
+    protected static ?string $pluralModelLabel = 'Daftar Ternak';
 
     public static function form(Form $form): Form
     {

@@ -121,6 +121,7 @@ class KategoriArtikelResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->withCount('artikels')
             ->withoutGlobalScopes([
                 //
             ]);

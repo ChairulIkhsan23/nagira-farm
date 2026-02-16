@@ -17,7 +17,11 @@ class KesehatanResource extends Resource
 {
     protected static ?string $model = Kesehatan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-face-smile';
+    protected static ?string $navigationGroup = 'Manajemen Ternak';
+    protected static ?string $navigationLabel = 'Kesehatan';
+    protected static ?string $modelLabel = 'Kesehatan';
+    protected static ?string $pluralModelLabel = 'Daftar Kesehatan';
 
     public static function form(Form $form): Form
     {

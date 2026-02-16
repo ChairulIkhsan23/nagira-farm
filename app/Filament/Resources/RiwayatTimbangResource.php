@@ -17,7 +17,11 @@ class RiwayatTimbangResource extends Resource
 {
     protected static ?string $model = RiwayatTimbang::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationGroup = 'Program Penggemukan';
+    protected static ?string $navigationLabel = 'Riwayat Timbang';
+    protected static ?string $modelLabel = 'Riwayat Timbang';
+    protected static ?string $pluralModelLabel = 'Daftar Riwayat Timbang';
 
     public static function form(Form $form): Form
     {

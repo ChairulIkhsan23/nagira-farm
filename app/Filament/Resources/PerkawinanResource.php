@@ -17,7 +17,11 @@ class PerkawinanResource extends Resource
 {
     protected static ?string $model = Perkawinan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-heart';
+    protected static ?string $navigationGroup = 'Program Perkawinan';
+    protected static ?string $navigationLabel = 'Breeding';
+    protected static ?string $modelLabel = 'Breeding';
+    protected static ?string $pluralModelLabel = 'Daftar Breeding';
 
     public static function form(Form $form): Form
     {

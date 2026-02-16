@@ -17,7 +17,11 @@ class FatteningResource extends Resource
 {
     protected static ?string $model = Fattening::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chevron-double-up';
+    protected static ?string $navigationGroup = 'Program Penggemukan';
+    protected static ?string $navigationLabel = 'Fattening';
+    protected static ?string $modelLabel = 'Fattening';
+    protected static ?string $pluralModelLabel = 'Daftar Fattening';
 
     public static function form(Form $form): Form
     {

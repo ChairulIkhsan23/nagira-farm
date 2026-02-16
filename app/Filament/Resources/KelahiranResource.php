@@ -17,7 +17,11 @@ class KelahiranResource extends Resource
 {
     protected static ?string $model = Kelahiran::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    protected static ?string $navigationGroup = 'Program Perkawinan';
+    protected static ?string $navigationLabel = 'Kelahiran';
+    protected static ?string $modelLabel = 'Kelahiran';
+    protected static ?string $pluralModelLabel = 'Daftar Kelahiran';
 
     public static function form(Form $form): Form
     {
