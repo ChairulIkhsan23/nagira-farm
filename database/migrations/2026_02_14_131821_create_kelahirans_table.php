@@ -27,12 +27,6 @@ return new class extends Migration
             $table->index(['betina_id', 'tanggal_melahirkan']);
             $table->index('perkawinan_id');
             $table->index('tanggal_melahirkan');
-            
-            // Foreign key constraint with custom name
-            $table->foreign('betina_id', 'kelahirans_betina_id_foreign')
-                ->references('id')
-                ->on('ternaks')
-                ->onDelete('cascade');
         });
     }
 
