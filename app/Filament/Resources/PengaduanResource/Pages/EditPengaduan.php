@@ -10,10 +10,23 @@ class EditPengaduan extends EditRecord
 {
     protected static string $resource = PengaduanResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getFormActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\Action::make('back')
+            ->label('Kembali')
+            ->color('gray')
+            ->url($this->getResource()::getUrl('index'))
+            ->icon('heroicon-o-arrow-left'),
+
+            $this->getSaveFormAction()
+            ->label('Simpan Perubahan')
+            ->icon('heroicon-o-check'),
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
