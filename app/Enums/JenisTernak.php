@@ -33,9 +33,6 @@ enum JenisTernak: string
     case KAMBING_LA_MANCHA = 'Kambing LaMancha';
     case KAMBING_OBERHASLI = 'Kambing Oberhasli';
     
-    /**
-     * Get all possible values of the enum.
-    */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');
@@ -43,6 +40,27 @@ enum JenisTernak: string
 
     public function label(): string
     {
-        return $this->value;
+        return match($this) {
+            self::KAMBING_KACANG => 'Kambing Kacang',
+            self::KAMBING_JAWARANDU => 'Kambing Jawarandu',
+            self::KAMBING_ETAWA => 'Kambing Etawa',
+            self::KAMBING_PERANAKAN_ETAWA => 'Kambing Peranakan Etawa',
+            self::KAMBING_BOER => 'Kambing Boer',
+            self::KAMBING_SAANEN => 'Kambing Saanen',
+            self::KAMBING_ALPINE => 'Kambing Alpine',
+            self::KAMBING_TOGGENBURG => 'Kambing Toggenburg',
+            self::KAMBING_ANGLO_NUBIAN => 'Kambing Anglo Nubian',
+            self::KAMBING_KIKO => 'Kambing Kiko',
+            self::KAMBING_MYOTONIC => 'Kambing Myotonic (Fainting Goat)',
+            self::KAMBING_LA_MANCHA => 'Kambing LaMancha',
+            self::KAMBING_OBERHASLI => 'Kambing Oberhasli',
+        };
+    }
+    
+    public static function options(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn ($case) => [$case->value => $case->label()])
+            ->toArray();
     }
 }
