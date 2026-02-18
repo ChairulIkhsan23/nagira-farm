@@ -2,90 +2,118 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
 class Pakan extends Model
 {
-    use HasFactory, SoftDeletes;
-
     protected $table = 'pakans';
 
     protected $fillable = [
-        'ternak_id',
+        'slug',
+        'kode_pakan',
         'jenis_pakan',
-        'jumlah_pakan',
-        'tanggal_pemberian',
+        'nama_pakan',
+        'stok',
+        'satuan',   
         'catatan',
     ];
 
     protected $casts = [
-        'jumlah_pakan' => 'float',
-        'tanggal_pemberian' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'stok' => 'decimal:2',
     ];
 
-    /**
-     * Accessor for formatted jumlah
-     */
-    public function getJumlahFormattedAttribute(): string
+    protected static function booted()
     {
-        return number_format($this->jumlah_pakan, 2) . ' kg';
+        parent::boot();
+
+        static::creating(function ($pakan) {
+
+            // Generate kode otomatis
+            if (empty($pakan->kode_pakan)) {
+                $pakan->kode_pakan = static::generateKodePakan($pakan->jenis_pakan);
+            }
+
+            // Generate slug
+            if (empty($pakan->slug)) {
+                $pakan->slug = static::generateSlug($pakan->kode_pakan, $pakan->nama_pakan);
+            }
+        });
+
+        static::updating(function ($pakan) {
+            if ($pakan->isDirty('kode_pakan') || $pakan->isDirty('nama_pakan')) {
+                $pakan->slug = static::generateSlug($pakan->kode_pakan, $pakan->nama_pakan);
+            }
+        });
     }
 
     /**
-     * Accessor for formatted tanggal
+     * Generate kode pakan otomatis
      */
-    public function getTanggalFormattedAttribute(): string
+    public static function generateKodePakan($jenisPakan = null): string
     {
-        return $this->tanggal_pemberian->format('d M Y H:i');
-    }
+        $prefix = 'PKN';
 
-    // ===================== RELATIONSHIPS =====================
+        if ($jenisPakan) {
+            $withoutSpace = str_replace(' ', '', $jenisPakan);
+            $prefix = strtoupper(substr($withoutSpace, 0, 4));
+        }
 
-    /**
-     * Get the ternak that owns the pakan record.
-     */
-    public function ternak()
-    {
-        return $this->belongsTo(Ternak::class, 'ternak_id');
-    }
+        $last = static::where('kode_pakan', 'like', $prefix . '%')
+            ->orderBy('kode_pakan', 'desc')
+            ->first();
 
-    // ===================== SCOPES =====================
+        if ($last) {
+            $lastNumber = intval(substr($last->kode_pakan, -3));
+            $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '001';
+        }
 
-    /**
-     * Scope a query to order by latest.
-     */
-    public function scopeLatest(Builder $query): Builder
-    {
-        return $query->orderBy('tanggal_pemberian', 'desc');
-    }
-
-    /**
-     * Scope a query to filter by jenis pakan.
-     */
-    public function scopeOfJenis(Builder $query, string $jenis): Builder
-    {
-        return $query->where('jenis_pakan', $jenis);
+        return $prefix . $newNumber;
     }
 
     /**
-     * Scope a query for a specific ternak.
+     * Generate slug
      */
-    public function scopeForTernak(Builder $query, $ternakId): Builder
+    public static function generateSlug($kode, $nama = null): string
     {
-        return $query->where('ternak_id', $ternakId);
+        $slug = $kode;
+        if ($nama) {
+            $slug .= '-' . $nama;
+        }
+        return str()->slug($slug);
     }
 
     /**
-     * Scope a query to filter by date.
+     * Route key pakai slug
      */
-    public function scopeOnDate(Builder $query, $date): Builder
+    public function getRouteKeyName(): string
     {
-        return $query->whereDate('tanggal_pemberian', $date);
+        return 'slug';
+    }
+
+    /**
+     * Relasi ke pakan_ternak
+     */
+    public function pakanTernaks()
+    {
+        return $this->hasMany(PakanTernak::class);
+    }
+
+    /**
+     * Scope stok habis
+     */
+    public function scopeStokHabis(Builder $query): Builder
+    {
+        return $query->where('stok', '<=', 0);
+    }
+
+    /**
+     * Scope stok menipis
+     */
+    public function scopeStokMenipis(Builder $query): Builder
+    {
+        return $query->whereBetween('stok', [0.1, 10]);
     }
 }
