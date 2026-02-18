@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Filament\Resources\PakanResource\Pages;
+namespace App\Filament\Resources\PakanTernakResource\Pages;
 
-use App\Filament\Resources\PakanResource;
+use App\Filament\Resources\PakanTernakResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditPakan extends EditRecord
+class EditPakanTernak extends EditRecord
 {
-    protected static string $resource = PakanResource::class;
+    protected static string $resource = PakanTernakResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make()
-                ->label('Hapus Pakan')
+                ->label('Hapus Pakan Ternak')
                 ->icon('heroicon-o-trash')
                 ->modalDescription('Apakah Anda yakin ingin menghapus tag ini? Data tidak dapat dikembalikan.')
                 ->modalSubmitActionLabel('Ya, Hapus')

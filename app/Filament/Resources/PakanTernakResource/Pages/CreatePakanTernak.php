@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\PakanResource\Pages;
+namespace App\Filament\Resources\PakanTernakResource\Pages;
 
-use App\Filament\Resources\PakanResource;
+use App\Filament\Resources\PakanTernakResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreatePakan extends CreateRecord
+class CreatePakanTernak extends CreateRecord
 {
-    protected static string $resource = PakanResource::class;
+    protected static string $resource = PakanTernakResource::class;
     public function getTitle(): string
     {
-        return 'Tambah Pakan';
+        return 'Tambah Pakan Ternak';
     }
 
     protected function getFormActions(): array

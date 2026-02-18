@@ -13,7 +13,9 @@ class ListPakans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Tambah Pakan Baru')
+            ->icon('heroicon-o-plus'),
         ];
     }
 }
