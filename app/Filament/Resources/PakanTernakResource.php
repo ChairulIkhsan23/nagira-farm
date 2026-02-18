@@ -275,10 +275,4 @@ class PakanTernakResource extends Resource
     {
         return 'success';
     }
-public static function getHeaderWidgets(): array
-{
-    return [
-        \App\Filament\Resources\PakanTernakResource\Widgets\PakanTernakChart::class,
-    ];
-}
 }

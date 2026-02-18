@@ -180,7 +180,7 @@ class PakanResource extends Resource
                 ->query(fn ($query) => $query->where('stok', '<=', 0))
                 ->label('Stok Habis'),
         ])
-       ->actions([
+        ->actions([
             ActionGroup::make([
                 EditAction::make()
                     ->icon('heroicon-o-pencil')
@@ -201,18 +201,6 @@ class PakanResource extends Resource
         ->striped();
 }
 
-public static function getNavigationBadge(): ?string
-{
-    // Total stok menipis
-    return static::getModel()::where('stok', '<=', 10)->count();
-}
-
-public static function getNavigationBadgeColor(): string|array|null
-{
-    $habis = static::getModel()::where('stok', '<=', 0)->count();
-
-    return $habis > 0 ? 'danger' : 'warning';
-}
 
     public static function getPages(): array
     {
@@ -220,6 +208,18 @@ public static function getNavigationBadgeColor(): string|array|null
             'index' => Pages\ListPakans::route('/'),
             'create' => Pages\CreatePakan::route('/create'),
             'edit' => Pages\EditPakan::route('/{record}/edit'),
-        ];
+            ];
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'success';
+    }
+        
 }
+        
