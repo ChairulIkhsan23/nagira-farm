@@ -3,6 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Enums\JenisPakan;
+use App\Enums\NamaPakan;
+
 
 return new class extends Migration
 {
@@ -13,18 +16,20 @@ return new class extends Migration
     {
         Schema::create('pakans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ternak_id')->constrained('ternaks')->onDelete('cascade');
-            $table->string('jenis_pakan');
-            $table->double('jumlah_pakan');
-            $table->timestamp('tanggal_pemberian');
+            $table->string('slug')->unique();
+            $table->string('kode_pakan')->unique();
+
+            $table->enum('jenis_pakan', JenisPakan::values());
+            $table->enum('nama_pakan', NamaPakan::values());
+
+            $table->decimal('stok', 12, 2); 
+            $table->enum('satuan', ['kg', 'gram', 'ton', 'karung', 'sak', 'ikat', 'liter']);
             $table->text('catatan')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
-            
-            // Indexes
-            $table->index(['ternak_id', 'jenis_pakan', 'tanggal_pemberian']);
+
             $table->index('jenis_pakan');
-            $table->index('tanggal_pemberian');
         });
     }
 
