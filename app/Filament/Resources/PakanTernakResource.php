@@ -268,11 +268,11 @@ class PakanTernakResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::whereDate('tanggal', today())->count();
+        return static::getModel()::count();
     }
 
     public static function getNavigationBadgeColor(): string|array|null
     {
-        return 'success';
+        return 'primary'; 
     }
 }

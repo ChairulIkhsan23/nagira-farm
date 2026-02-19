@@ -3,15 +3,31 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\KesehatanResource\Pages;
-use App\Filament\Resources\KesehatanResource\RelationManagers;
 use App\Models\Kesehatan;
-use Filament\Forms;
+use App\Models\Ternak;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+// Form Components
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+
+// Table Components
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 
 class KesehatanResource extends Resource
 {
@@ -21,22 +37,76 @@ class KesehatanResource extends Resource
     protected static ?string $navigationGroup = 'Manajemen Ternak';
     protected static ?string $navigationLabel = 'Kesehatan';
     protected static ?string $modelLabel = 'Kesehatan';
-    protected static ?string $pluralModelLabel = 'Daftar Kesehatan';
+    protected static ?string $pluralModelLabel = 'Riwayat Kesehatan';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('ternak_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('kondisi')
-                    ->required(),
-                Forms\Components\TextInput::make('diagnosa'),
-                Forms\Components\Textarea::make('tindakan')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('obat'),
-                Forms\Components\DateTimePicker::make('tanggal_periksa'),
+                Section::make('Input Data Kesehatan')
+                    ->description('Catat riwayat kesehatan ternak')
+                    ->icon('heroicon-o-heart')
+                    ->schema([
+
+                        Grid::make(2)->schema([
+
+                            Select::make('ternak_id')
+                                ->label('Ternak')
+                                ->relationship('ternak', 'kode_ternak')
+                                ->searchable()
+                                ->preload()
+                                ->reactive()
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    $ternak = Ternak::find($state);
+                                    $set('ternak_nama_preview', $ternak?->nama_ternak);
+                                    $set('ternak_jenis_preview', $ternak?->jenis_ternak);
+                                })
+                                ->required(),
+
+                            DatePicker::make('tanggal_periksa')
+                                ->label('Tanggal Periksa')
+                                ->required()
+                                ->default(now())
+                                ->native(false)
+                                ->displayFormat('d M Y'),
+                        ]),
+
+                        Section::make('Detail Ternak')
+                            ->schema([
+                                Placeholder::make('ternak_nama_preview')
+                                    ->label('Nama Ternak')
+                                    ->content(fn ($get) => $get('ternak_nama_preview') ?? '-'),
+
+                                Placeholder::make('ternak_jenis_preview')
+                                    ->label('Jenis Ternak')
+                                    ->content(fn ($get) => $get('ternak_jenis_preview') ?? '-'),
+                            ])
+                            ->columns(2)
+                            ->collapsible(),
+
+                        Grid::make(2)->schema([
+
+                            Select::make('kondisi')
+                                ->label('Kondisi')
+                                ->required()
+                                ->options([
+                                    'sehat' => 'Sehat',
+                                    'sakit' => 'Sakit',
+                                    'kritis' => 'Kritis',
+                                ])
+                                ->native(false),
+
+                            TextInput::make('obat')
+                                ->placeholder('Contoh: Vitamin B'),
+                        ]),
+
+                        TextInput::make('diagnosa')
+                            ->placeholder('Contoh: Infeksi ringan'),
+
+                        Textarea::make('tindakan')
+                            ->placeholder('Contoh: Pemberian antibiotik selama 3 hari')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 
@@ -44,49 +114,102 @@ class KesehatanResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('ternak_id')
-                    ->numeric()
+
+                TextColumn::make('ternak.kode_ternak')
+                    ->label('Kode Ternak')
+                    ->searchable()
+                    ->weight('bold')
+                    ->color('primary')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('kondisi')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('diagnosa')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('obat')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tanggal_periksa')
-                    ->dateTime()
+
+                TextColumn::make('ternak.nama_ternak')
+                    ->searchable()
+                    ->limit(20)
+                    ->default('-')
+                    ->toggleable(),
+
+                TextColumn::make('kondisi')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => ucfirst($state))
+                    ->color(fn ($state) => match ($state) {
+                        'sehat' => 'success',
+                        'sakit' => 'warning',
+                        'kritis' => 'danger',
+                        default => 'gray',
+                    })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
+
+                TextColumn::make('diagnosa')
+                    ->limit(25)
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('obat')
+                    ->badge()
+                    ->color('info')
+                    ->searchable()
+                    ->toggleable(),
+
+                TextColumn::make('tanggal_periksa')
+                    ->date('d M Y')
+                    ->sortable(),
+
+                TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+
+                SelectFilter::make('ternak_id')
+                    ->relationship('ternak', 'kode_ternak')
+                    ->label('Ternak')
+                    ->searchable(),
+
+                SelectFilter::make('kondisi')
+                    ->options([
+                        'sehat' => 'Sehat',
+                        'sakit' => 'Sakit',
+                        'kritis' => 'Kritis',
+                    ]),
+
+                Filter::make('tanggal_periksa')
+                    ->form([
+                        DatePicker::make('dari'),
+                        DatePicker::make('sampai'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['dari'],
+                                fn (Builder $query, $date): Builder =>
+                                    $query->whereDate('tanggal_periksa', '>=', $date),
+                            )
+                            ->when(
+                                $data['sampai'],
+                                fn (Builder $query, $date): Builder =>
+                                    $query->whereDate('tanggal_periksa', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    EditAction::make()
+                        ->icon('heroicon-o-pencil')
+                        ->color('primary'),
+
+                    DeleteAction::make()
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation(),
+                ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+            ])
+            ->defaultSort('tanggal_periksa', 'desc')
+            ->striped();
     }
 
     public static function getPages(): array
@@ -97,4 +220,16 @@ class KesehatanResource extends Resource
             'edit' => Pages\EditKesehatan::route('/{record}/edit'),
         ];
     }
+
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'primary'; 
+    }
+
 }
