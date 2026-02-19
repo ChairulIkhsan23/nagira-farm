@@ -44,22 +44,6 @@ class Pengaduan extends Model
     }
 
     /**
-     * Accessor for kategori label.
-     */
-    public function getKategoriLabelAttribute(): string
-    {
-        $labels = [
-            'saran' => 'Saran',
-            'kritik' => 'Kritik',
-            'pertanyaan' => 'Pertanyaan',
-            'keluhan' => 'Keluhan',
-            'lainnya' => 'Lainnya',
-        ];
-        
-        return $labels[$this->kategori] ?? ucfirst($this->kategori);
-    }
-
-    /**
      * Check if has email.
      */
     public function getHasEmailAttribute(): bool
