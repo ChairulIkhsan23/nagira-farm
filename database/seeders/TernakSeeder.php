@@ -123,6 +123,7 @@ class TernakSeeder extends Seeder
             default => 'Mati',
         };
 
+        $bobot = round(rand(200, 800) / 10, 1); // 20.0 - 80.0 kg
         // Siapkan data ternak
         $data = [
             'nama_ternak' => $namaTernak,
@@ -130,6 +131,7 @@ class TernakSeeder extends Seeder
             'kategori' => $kategori,
             'jenis_kelamin' => $jenisKelamin,
             'tanggal_lahir' => $tanggalLahir,
+            'bobot' => $bobot,
             'foto' => $this->getRandomPhoto(),
             'status_aktif' => $statusAktif,
         ];
@@ -140,9 +142,10 @@ class TernakSeeder extends Seeder
         // Jika index diberikan dan random false, tampilkan progress
         if ($index && !$random) {
             if ($index % 5 === 0) {
-                $this->command->info("  ✓ Created: {$ternak->kode_ternak} - {$ternak->nama_ternak}");
+                $this->command->info("  ✓ Created: {$ternak->kode_ternak} - {$ternak->nama_ternak} - {$bobot} kg");
             }
         }
+        
     }
 
     /**
