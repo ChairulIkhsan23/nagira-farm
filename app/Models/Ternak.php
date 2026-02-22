@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Ternak extends Model
 {
@@ -22,12 +24,16 @@ class Ternak extends Model
         'kategori',
         'jenis_kelamin',
         'tanggal_lahir',
+        'bobot',
+        'tanggal_timbang_terakhir',
         'foto',
         'status_aktif',
     ];
 
     protected $casts = [
         'tanggal_lahir' => 'date',
+        'tanggal_timbang_terakhir' => 'date',
+        'bobot' => 'float',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -242,6 +248,23 @@ class Ternak extends Model
     public function fattening()
     {
         return $this->hasOne(Fattening::class, 'ternak_id');
+    }
+
+    /**
+     * Get all fattening programs for this ternak
+     */
+    public function programFattening(): HasMany
+    {
+        return $this->hasMany(Fattening::class, 'ternak_id');
+    }
+
+    /**
+     * Get active fattening program for this ternak
+     */
+    public function programFatteningAktif(): HasOne
+    {
+        return $this->hasOne(Fattening::class, 'ternak_id')
+            ->where('status', 'progres');
     }
 
     /**
