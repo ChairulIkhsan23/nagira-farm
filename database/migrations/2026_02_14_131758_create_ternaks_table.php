@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('kategori', ['regular', 'breeding', 'fattening'])->nullable();
             $table->enum('jenis_kelamin', ['jantan', 'betina']);
             $table->date('tanggal_lahir')->nullable();
+            $table->decimal('bobot', 8, 2)->nullable();
+            $table->date('tanggal_timbang_terakhir')->nullable();
             $table->string('foto')->nullable();
             $table->enum('status_aktif', ['aktif', 'mati', 'terjual'])->default('aktif');
             $table->softDeletes();
