@@ -41,20 +41,27 @@ class Perkawinan extends Model
     {
         parent::boot();
 
-        static::creating(function ($perkawinan) {
-            if ($perkawinan->tanggal_kawin && !$perkawinan->perkiraan_lahir) {
-                // Kambing: rata-rata masa kebuntingan 150 hari (5 bulan)
-                $perkawinan->perkiraan_lahir = Carbon::parse($perkawinan->tanggal_kawin)->addDays(150);
+        static::created(function ($perkawinan) {
+
+            // Update betina
+            if ($perkawinan->betina_id) {
+                Ternak::where('id', $perkawinan->betina_id)
+                    ->update(['kategori' => 'breeding']);
+            }
+
+            // Update pejantan
+            if ($perkawinan->pejantan_id) {
+                Ternak::where('id', $perkawinan->pejantan_id)
+                    ->update(['kategori' => 'breeding']);
             }
         });
 
-        static::updating(function ($perkawinan) {
-            if ($perkawinan->isDirty('tanggal_kawin') && $perkawinan->tanggal_kawin) {
+        static::creating(function ($perkawinan) {
+            if ($perkawinan->tanggal_kawin && !$perkawinan->perkiraan_lahir) {
                 $perkawinan->perkiraan_lahir = Carbon::parse($perkawinan->tanggal_kawin)->addDays(150);
             }
         });
     }
-
     /**
      * Accessor for sisa hari kebuntingan
      */

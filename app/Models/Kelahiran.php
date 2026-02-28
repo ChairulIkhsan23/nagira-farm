@@ -2,9 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\Ternak;
+use Illuminate\Support\Str;
+
 
 class Kelahiran extends Model
 {
@@ -16,6 +20,8 @@ class Kelahiran extends Model
         'betina_id',
         'perkawinan_id',
         'tanggal_melahirkan',
+        'tanggal_sapih',
+        'umur_sapih_hari',
         'jumlah_anak_lahir',
         'jumlah_anak_hidup',
         'jumlah_anak_mati',
@@ -25,164 +31,165 @@ class Kelahiran extends Model
 
     protected $casts = [
         'tanggal_melahirkan' => 'date',
+        'tanggal_sapih' => 'date',
+        'umur_sapih_hari' => 'integer',
         'jumlah_anak_lahir' => 'integer',
         'jumlah_anak_hidup' => 'integer',
         'jumlah_anak_mati' => 'integer',
         'detail_anak' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
+    // ================= BOOT ================= //
 
+    protected static function booted()
+    {
         static::creating(function ($kelahiran) {
-            // Auto calculate jumlah anak lahir dari hidup + mati jika tidak diisi
-            if (!$kelahiran->jumlah_anak_lahir && ($kelahiran->jumlah_anak_hidup || $kelahiran->jumlah_anak_mati)) {
-                $kelahiran->jumlah_anak_lahir = ($kelahiran->jumlah_anak_hidup ?? 0) + ($kelahiran->jumlah_anak_mati ?? 0);
+            if (!$kelahiran->jumlah_anak_lahir) {
+                $kelahiran->jumlah_anak_lahir =
+                    ($kelahiran->jumlah_anak_hidup ?? 0) +
+                    ($kelahiran->jumlah_anak_mati ?? 0);
             }
         });
 
         static::created(function ($kelahiran) {
-            // Update status perkawinan menjadi 'melahirkan'
-            if ($kelahiran->perkawinan_id) {
-                $kelahiran->perkawinan()->update(['status_siklus' => 'melahirkan']);
+
+            if (!$kelahiran->detail_anak || !$kelahiran->betina_id) {
+                return;
+            }
+
+            $perkawinan = $kelahiran->perkawinan;
+            $pejantanId = $perkawinan?->pejantan_id;
+
+            foreach ($kelahiran->detail_anak as $anak) {
+
+                if (empty($anak['jenis_kelamin'])) {
+                    continue;
+                }
+
+                Ternak::create([
+                    'slug'          => Str::uuid(),
+                    'kode_ternak'   => null, // auto generate dari model Ternak
+                    'nama_ternak'   => $anak['nama_ternak'] ?? null,
+                    'jenis_ternak'  => $kelahiran->betina?->jenis_ternak,
+                    'kategori'      => $anak['kategori'] ?? 'regular',
+                    'jenis_kelamin' => $anak['jenis_kelamin'],
+                    'tanggal_lahir' => $kelahiran->tanggal_melahirkan,
+                    'status_aktif'  => $anak['status_aktif'] ?? 'aktif',
+                    'induk_id'      => $kelahiran->betina_id,
+                    'pejantan_id'   => $pejantanId,
+                    'berat_lahir'   => $anak['berat_lahir'] ?? null,
+                ]);
+            }
+        });
+
+        static::saving(function ($kelahiran) {
+            $kelahiran->umur_sapih_hari ??= 90;
+
+            if ($kelahiran->tanggal_melahirkan) {
+                $kelahiran->tanggal_sapih = Carbon::parse($kelahiran->tanggal_melahirkan)
+                    ->addDays($kelahiran->umur_sapih_hari);
             }
         });
     }
 
-    /**
-     * Accessor for mortalitas rate
-     */
+    // ================= ACCESSORS ================= //
+
     public function getMortalitasRateAttribute(): float
     {
-        if ($this->jumlah_anak_lahir <= 0) {
-            return 0;
-        }
-        
+        if (($this->jumlah_anak_lahir ?? 0) == 0) return 0;
         return round(($this->jumlah_anak_mati / $this->jumlah_anak_lahir) * 100, 1);
     }
 
-    /**
-     * Accessor for survival rate
-     */
     public function getSurvivalRateAttribute(): float
     {
-        if ($this->jumlah_anak_lahir <= 0) {
-            return 0;
-        }
-        
+        if (($this->jumlah_anak_lahir ?? 0) == 0) return 0;
         return round(($this->jumlah_anak_hidup / $this->jumlah_anak_lahir) * 100, 1);
     }
 
-    /**
-     * Accessor for jenis kelamin summary dari detail_anak
-     */
     public function getJenisKelaminSummaryAttribute(): array
     {
-        if (!$this->detail_anak) {
-            return ['jantan' => 0, 'betina' => 0, 'unknown' => 0];
-        }
-        
         $summary = ['jantan' => 0, 'betina' => 0, 'unknown' => 0];
-        
-        foreach ($this->detail_anak as $anak) {
+
+        foreach ($this->detail_anak ?? [] as $anak) {
             $jk = $anak['jenis_kelamin'] ?? 'unknown';
-            if (in_array($jk, ['jantan', 'betina'])) {
-                $summary[$jk]++;
-            } else {
-                $summary['unknown']++;
-            }
+            $summary[$jk] = ($summary[$jk] ?? 0) + 1;
         }
-        
+
         return $summary;
     }
 
-    /**
-     * Accessor for formatted tanggal
-     */
-    public function getTanggalFormattedAttribute(): string
+    public function getTanggalFormattedAttribute(): ?string
     {
-        return $this->tanggal_melahirkan->format('d M Y');
+        return $this->tanggal_melahirkan?->format('d M Y');
     }
 
-    /**
-     * Get children details as collection
-     */
+    public function getSisaSapihHariAttribute(): int
+    {
+        return $this->tanggal_sapih
+            ? now()->diffInDays($this->tanggal_sapih, false)
+            : 0;
+    }
+
+    public function getStatusSapihAttribute(): string
+    {
+        if (!$this->tanggal_sapih) return '-';
+
+        return now()->lt($this->tanggal_sapih)
+            ? "Menyusui ({$this->sisa_sapih_hari} hari lagi)"
+            : "Sudah Sapih";
+    }
+
     public function getAnakCollectionAttribute()
     {
-        return collect($this->detail_anak);
+        return collect($this->detail_anak ?? []);
     }
 
-    /**
-     * Get jumlah anak jantan
-     */
     public function getJumlahAnakJantanAttribute(): int
     {
         return $this->jenis_kelamin_summary['jantan'];
     }
 
-    /**
-     * Get jumlah anak betina
-     */
     public function getJumlahAnakBetinaAttribute(): int
     {
         return $this->jenis_kelamin_summary['betina'];
     }
 
-    // ===================== RELATIONSHIPS =====================
+    // ================= RELATIONSHIPS ================= //
 
-    /**
-     * Get the betina (mother) ternak.
-     */
     public function betina()
     {
         return $this->belongsTo(Ternak::class, 'betina_id');
     }
 
-    /**
-     * Get the perkawinan that led to this kelahiran.
-     */
     public function perkawinan()
     {
         return $this->belongsTo(Perkawinan::class, 'perkawinan_id');
     }
 
-    // ===================== SCOPES =====================
-
-    /**
-     * Scope a query to filter by date range.
-     */
-    public function scopeBetweenDates(Builder $query, $startDate, $endDate): Builder
+    public function induk()
     {
-        return $query->whereBetween('tanggal_melahirkan', [$startDate, $endDate]);
+        return $this->belongsTo(Ternak::class, 'induk_id');
     }
 
-    /**
-     * Scope a query to order by latest.
-     */
-    public function scopeLatest(Builder $query): Builder
+    public function pejantan()
     {
-        return $query->orderBy('tanggal_melahirkan', 'desc');
+        return $this->belongsTo(Ternak::class, 'pejantan_id');
     }
 
-    /**
-     * Scope a query for a specific betina.
-     */
+    // ================= SCOPES ================= //
+
+    public function scopeBetweenDates(Builder $query, $start, $end): Builder
+    {
+        return $query->whereBetween('tanggal_melahirkan', [$start, $end]);
+    }
+
     public function scopeForBetina(Builder $query, $betinaId): Builder
     {
         return $query->where('betina_id', $betinaId);
     }
 
-    /**
-     * Scope a query for kelahiran with high mortality.
-     */
     public function scopeHighMortality(Builder $query, float $threshold = 50): Builder
     {
-        return $query->whereRaw('(jumlah_anak_mati * 100.0 / jumlah_anak_lahir) >= ?', [$threshold]);
+        return $query->whereRaw('jumlah_anak_lahir > 0 AND (jumlah_anak_mati * 100.0 / jumlah_anak_lahir) >= ?', [$threshold]);
     }
 }

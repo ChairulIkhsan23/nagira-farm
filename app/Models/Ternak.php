@@ -18,17 +18,20 @@ class Ternak extends Model
 
     protected $fillable = [
         'slug',
-        'kode_ternak',
-        'nama_ternak',
-        'jenis_ternak',
-        'kategori',
-        'jenis_kelamin',
-        'tanggal_lahir',
-        'bobot',
-        'tanggal_timbang_terakhir',
-        'foto',
-        'status_aktif',
-    ];
+    'kode_ternak',
+    'nama_ternak',
+    'jenis_ternak',
+    'kategori',
+    'jenis_kelamin',
+    'tanggal_lahir',
+    'foto',
+    'status_aktif',
+    'induk_id',
+    'pejantan_id',
+    'berat_lahir',
+];
+   
+
 
     protected $casts = [
         'tanggal_lahir' => 'date',
@@ -40,9 +43,8 @@ class Ternak extends Model
     ];
 
     protected $attributes = [
-        'status_aktif' => 'Aktif',
-    ];
-
+    'status_aktif' => 'aktif',
+];
     /**
      * Boot the model.
      */
@@ -68,6 +70,20 @@ class Ternak extends Model
                 $ternak->slug = static::generateSlug($ternak->kode_ternak, $ternak->nama_ternak);
             }
         });
+    }
+
+    public function kelahirans()
+    {
+        return $this->hasMany(Kelahiran::class, 'betina_id');
+    }
+    public function perkawinansSebagaiBetina()
+    {
+        return $this->hasMany(Perkawinan::class, 'betina_id');
+    }
+
+    public function perkawinansSebagaiPejantan()
+    {
+        return $this->hasMany(Perkawinan::class, 'pejantan_id');
     }
 
     /**
@@ -195,9 +211,9 @@ class Ternak extends Model
     public function getStatusBadgeColorAttribute(): string
     {
         return match($this->status_aktif) {
-            'Aktif' => 'success',
-            'Mati' => 'danger',
-            'Terjual' => 'warning',
+            'aktif' => 'success',
+            'mati' => 'danger',
+            'terjual' => 'warning',
             default => 'gray',
         };
     }
@@ -208,8 +224,8 @@ class Ternak extends Model
     public function getJenisKelaminIconAttribute(): string
     {
         return match($this->jenis_kelamin) {
-            'Jantan' => '♂',
-            'Betina' => '♀',
+            'jantan' => '♂',
+            'betina' => '♀',
             default => '',
         };
     }
@@ -345,11 +361,33 @@ class Ternak extends Model
      */
     public function getTotalAnakAttribute(): int
     {
-        if ($this->jenis_kelamin !== 'Betina') {
+        if ($this->jenis_kelamin !== 'betina') {
             return 0;
         }
         
-        return $this->kelahiranSebagaiBetina()->sum('jumlah_anak');
+        return $this->kelahiranSebagaiBetina()->sum('jumlah_anak_lahir');
+    }
+
+    // ===================== RELASI PARENT =====================
+
+    public function induk()
+    {
+        return $this->belongsTo(Ternak::class, 'induk_id');
+    }
+
+    public function pejantan()
+    {
+        return $this->belongsTo(Ternak::class, 'pejantan_id');
+    }
+
+    public function anakDariInduk()
+    {
+        return $this->hasMany(Ternak::class, 'induk_id');
+    }
+
+    public function anakDariPejantan()
+    {
+        return $this->hasMany(Ternak::class, 'pejantan_id');
     }
 
     // ===================== SCOPES =====================
@@ -359,31 +397,22 @@ class Ternak extends Model
      */
     public function scopeAktif(Builder $query): Builder
     {
-        return $query->where('status_aktif', 'Aktif');
+        return $query->where('status_aktif', 'aktif');
     }
 
-    /**
-     * Scope a query to only include non-aktif (mati/terjual) ternak.
-     */
     public function scopeNonAktif(Builder $query): Builder
     {
-        return $query->whereIn('status_aktif', ['Mati', 'Terjual']);
+        return $query->whereIn('status_aktif', ['mati', 'terjual']);
     }
 
-    /**
-     * Scope a query to only include jantan.
-     */
     public function scopeJantan(Builder $query): Builder
     {
-        return $query->where('jenis_kelamin', 'Jantan');
+        return $query->where('jenis_kelamin', 'jantan');
     }
 
-    /**
-     * Scope a query to only include betina.
-     */
     public function scopeBetina(Builder $query): Builder
     {
-        return $query->where('jenis_kelamin', 'Betina');
+        return $query->where('jenis_kelamin', 'betina');
     }
 
     /**

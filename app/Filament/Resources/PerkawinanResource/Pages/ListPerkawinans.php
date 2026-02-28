@@ -13,7 +13,9 @@ class ListPerkawinans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Tambah Perkawinan Baru')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }

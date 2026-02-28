@@ -13,7 +13,9 @@ class ListKelahirans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Tambah Kelahiran Baru')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }
