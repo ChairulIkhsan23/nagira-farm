@@ -25,6 +25,20 @@ return new class extends Migration
             $table->date('tanggal_timbang_terakhir')->nullable();
             $table->string('foto')->nullable();
             $table->enum('status_aktif', ['aktif', 'mati', 'terjual'])->default('aktif');
+
+            // ================= RELASI PARENT =================
+            $table->foreignId('induk_id')
+                ->nullable()
+                ->constrained('ternaks')
+                ->nullOnDelete();
+
+            $table->foreignId('pejantan_id')
+                ->nullable()
+                ->constrained('ternaks')
+                ->nullOnDelete();
+
+            $table->decimal('berat_lahir', 5, 2)->nullable();
+
             $table->softDeletes();
             $table->timestamps();
             
@@ -35,6 +49,8 @@ return new class extends Migration
             $table->index('jenis_kelamin');
             $table->index('tanggal_lahir');
             $table->index('status_aktif');
+            $table->index('induk_id');
+            $table->index('pejantan_id');
         });
     }
 

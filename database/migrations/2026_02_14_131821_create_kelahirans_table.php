@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('betina_id')->constrained('ternaks')->onDelete('cascade');
             $table->foreignId('perkawinan_id')->nullable()->constrained('perkawinans')->onDelete('cascade');
             $table->date('tanggal_melahirkan');
+            $table->date('tanggal_sapih')->nullable();
+            $table->integer('umur_sapih_hari')->nullable();
             $table->unsignedInteger('jumlah_anak_lahir')->default(0);
             $table->unsignedInteger('jumlah_anak_hidup')->default(0);
             $table->unsignedInteger('jumlah_anak_mati')->default(0);
