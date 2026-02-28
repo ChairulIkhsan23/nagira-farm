@@ -94,7 +94,10 @@ class TernakResource extends Resource
                                     ])
                                     ->native(false)
                                     ->placeholder('Pilih kategori')
-                                    ->columnSpan(1),
+                                    ->default('regular')
+                                    ->columnSpan(1)
+                                    ->reactive()
+                                    ->helperText('Kategori akan mempengaruhi program yang dapat diikuti ternak'),
                                 
                                 Select::make('jenis_kelamin')
                                     ->required()
@@ -124,6 +127,24 @@ class TernakResource extends Resource
                                     ->default('aktif')
                                     ->native(false)
                                     ->columnSpan(1),
+                            ]),
+
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('bobot')
+                                    ->label('Bobot Saat Ini (kg)')
+                                    ->numeric()
+                                    ->step(0.1)
+                                    ->minValue(0)
+                                    ->suffix('kg')
+                                    ->helperText('Bobot ternak saat ini'),
+                                
+                                DatePicker::make('tanggal_timbang_terakhir')
+                                    ->label('Tanggal Timbang Terakhir')
+                                    ->maxDate(now())
+                                    ->native(false)
+                                    ->displayFormat('d M Y')
+                                    ->helperText('Tanggal terakhir melakukan penimbangan (otomatis) default ke tanggal lahir') 
                             ]),
                         
                         FileUpload::make('foto')
@@ -190,6 +211,14 @@ class TernakResource extends Resource
                         'fattening' => 'info',
                         default => 'gray',
                     }),
+                            
+                TextColumn::make('bobot')
+                    ->label('Bobot')
+                    ->numeric(decimalPlaces: 1)
+                    ->suffix(' kg')
+                    ->sortable()
+                    ->color('success')
+                    ->weight('bold'),
                     
                 TextColumn::make('jenis_kelamin')
                     ->searchable()

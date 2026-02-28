@@ -13,7 +13,9 @@ class ListRiwayatTimbangs extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Tambah Riwayat Timbang Baru')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }

@@ -13,7 +13,32 @@ class EditRiwayatTimbang extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->label('Hapus Data Riwayat Timbang')
+                ->icon('heroicon-o-trash')
+                ->modalDescription('Apakah Anda yakin ingin menghapus tag ini? Data tidak dapat dikembalikan.')
+                ->modalSubmitActionLabel('Ya, Hapus')
+                ->modalCancelActionLabel('Batal'),
         ];
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            Actions\Action::make('back')
+            ->label('Batal')
+            ->color('gray')
+            ->url($this->getResource()::getUrl('index'))
+            ->icon('heroicon-o-arrow-left'),
+            
+            $this->getSaveFormAction()
+            ->label('Simpan Perubahan')
+            ->icon('heroicon-o-check'),
+        ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }
