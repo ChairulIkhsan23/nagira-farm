@@ -15,17 +15,19 @@ class ArtikelReminder extends BaseWidget
     {
         $now = now();
 
-        $artikelBulanIni = Artikel::where('status', 'publish')
+        $artikelBulanIni = Artikel::where('status', 'published')
             ->whereMonth('tanggal_publish', $now->month)
             ->whereYear('tanggal_publish', $now->year)
             ->count();
 
-        $artikelTerakhir = Artikel::where('status', 'publish')
+        $artikelTerakhir = Artikel::where('status', 'published')
             ->latest('tanggal_publish')
             ->first();
 
         $hariSejakPublish = $artikelTerakhir
-            ? Carbon::parse($artikelTerakhir->tanggal_publish)->diffInDays($now)
+            ? Carbon::parse($artikelTerakhir->tanggal_publish)
+                ->locale('id')
+                ->diffForHumans()
             : null;
 
         return [
@@ -44,7 +46,7 @@ class ArtikelReminder extends BaseWidget
             Stat::make(
                 'Terakhir Publish',
                 $hariSejakPublish !== null
-                    ? $hariSejakPublish . ' hari lalu'
+                    ? $hariSejakPublish
                     : 'Belum pernah publish'
             )
                 ->description('Jarak dari publish terakhir')
@@ -56,7 +58,7 @@ class ArtikelReminder extends BaseWidget
 
             Stat::make(
                 'Total Publish',
-                Artikel::where('status', 'publish')->count()
+                Artikel::where('status', 'published')->count()
             )
                 ->description('Jumlah artikel aktif')
                 ->color('primary'),
