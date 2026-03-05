@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ArtikelResource\Pages;
 
 use App\Filament\Resources\ArtikelResource;
+use App\Filament\Resources\ArtikelResource\Widgets\ArtikelReminder;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\Action;
@@ -17,6 +18,13 @@ class ListArtikels extends ListRecords
             Actions\CreateAction::make()
             ->label('Tambah Artikel')
             ->icon('heroicon-o-plus'),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            ArtikelReminder::class,
         ];
     }
 }

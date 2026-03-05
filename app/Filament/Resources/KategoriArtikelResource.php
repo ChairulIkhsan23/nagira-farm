@@ -135,4 +135,13 @@ class KategoriArtikelResource extends Resource
             'edit' => Pages\EditKategoriArtikel::route('/{record}/edit'),
         ];
     }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'primary';
+    }
 }

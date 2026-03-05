@@ -35,9 +35,9 @@ class PerkawinanResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-heart';
     protected static ?string $navigationGroup = 'Program Perkawinan';
-    protected static ?string $navigationLabel = 'Perkawinan';
-    protected static ?string $modelLabel = 'Perkawinan';
-    protected static ?string $pluralModelLabel = 'Data Perkawinan';
+    protected static ?string $navigationLabel = 'Breeding';
+    protected static ?string $modelLabel = 'Breeding';
+    protected static ?string $pluralModelLabel = 'Data Breeding';
 
     // ================= FORM ================= //
 
@@ -63,9 +63,12 @@ class PerkawinanResource extends Resource
                                     ->whereDoesntHave('perkawinanSebagaiBetina', function ($q) {
                                         $q->whereIn('status_siklus', ['kawin', 'bunting']);
                                     })
-                                    ->whereDoesntHave('kelahirans', function ($q) {
-        $q->whereDate('tanggal_sapih', '>', now());
-    })
+                                    ->where(function ($query) {
+                                    $query->whereDoesntHave('kelahirans')
+                                        ->orWhereHas('kelahirans', function ($q) {
+                                            $q->whereDate('tanggal_sapih', '<=', now());
+                                        });
+                                })
                             )
                             ->searchable()
                             ->preload()
@@ -355,4 +358,13 @@ class PerkawinanResource extends Resource
         return 'primary'; 
     }
 
+    public static function getNavigationLabel(): string
+    {
+        return 'Program Breeding';
+    }
+
+    public static function getPluralLabel(): string
+    {
+        return 'Data Breeding';
+    }
 }
