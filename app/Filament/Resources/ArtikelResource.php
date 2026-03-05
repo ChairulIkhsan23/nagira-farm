@@ -65,7 +65,8 @@ class ArtikelResource extends Resource
                     Select::make('kategori_id')
                         ->relationship('kategori', 'nama_kategori')
                         ->required()
-                        ->searchable(),
+                        ->searchable()
+                        ->preload(),
 
                     FileUpload::make('foto')
                         ->image()
@@ -78,7 +79,7 @@ class ArtikelResource extends Resource
                     Select::make('status')
                         ->options([
                             'draft' => 'Draft',
-                            'publish' => 'Publish',
+                            'published' => 'Publish',
                         ])
                         ->required(),
 
