@@ -82,8 +82,7 @@ class KategoriArtikelResource extends Resource
                 TextColumn::make('slug')
                     ->copyable()
                     ->copyMessage('Slug disalin')
-                    ->color('gray')
-                    ->toggleable(),
+                    ->color('gray'),
 
                 BadgeColumn::make('total_artikels_count')
                     ->label('Total Artikel')
@@ -92,12 +91,6 @@ class KategoriArtikelResource extends Resource
 
                 TextColumn::make('created_at')
                     ->label('Dibuat')
-                    ->dateTime('d M Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('deleted_at')
-                    ->label('Dihapus')
                     ->dateTime('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

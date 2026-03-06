@@ -115,6 +115,7 @@ class ArtikelResource extends Resource
 
                 TextColumn::make('created_at')
                     ->dateTime('d M Y')
+                    ->label('Dibuat')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

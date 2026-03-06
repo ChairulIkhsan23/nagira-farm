@@ -125,8 +125,7 @@ class KesehatanResource extends Resource
                 TextColumn::make('ternak.nama_ternak')
                     ->searchable()
                     ->limit(20)
-                    ->default('-')
-                    ->toggleable(),
+                    ->default('-'),
 
                 TextColumn::make('kondisi')
                     ->badge()
@@ -141,14 +140,12 @@ class KesehatanResource extends Resource
 
                 TextColumn::make('diagnosa')
                     ->limit(25)
-                    ->searchable()
-                    ->toggleable(),
+                    ->searchable(),
 
                 TextColumn::make('obat')
                     ->badge()
                     ->color('info')
-                    ->searchable()
-                    ->toggleable(),
+                    ->searchable(),
 
                 TextColumn::make('tanggal_periksa')
                     ->date('d M Y')
@@ -156,6 +153,8 @@ class KesehatanResource extends Resource
 
                 TextColumn::make('created_at')
                     ->dateTime()
+                    ->label('Dibuat')
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([

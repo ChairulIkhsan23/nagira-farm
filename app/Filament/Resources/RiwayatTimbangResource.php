@@ -151,8 +151,7 @@ class RiwayatTimbangResource extends Resource
                     ->label('Nama Ternak')
                     ->searchable()
                     ->default('-')
-                    ->limit(20)
-                    ->toggleable(),
+                    ->limit(20),
                 
                 TextColumn::make('bobot')
                     ->label('Bobot')
@@ -165,14 +164,12 @@ class RiwayatTimbangResource extends Resource
                 TextColumn::make('selisih_bobot_formatted')
                     ->label('Δ Bobot')
                     ->badge()
-                    ->color(fn ($record) => $record->gain_color)
-                    ->toggleable(),
+                    ->color(fn ($record) => $record->gain_color),
                 
                 TextColumn::make('adg_formatted')
                     ->label('ADG')
                     ->badge()
-                    ->color('info')
-                    ->toggleable(),
+                    ->color('info'),
                 
                 TextColumn::make('fattening.formatted_id')
                     ->label('Program')
@@ -182,14 +179,12 @@ class RiwayatTimbangResource extends Resource
                     ->url(fn ($record) => $record->fattening_id ? 
                         FatteningResource::getUrl('edit', ['record' => $record->fattening_id]) : null
                     )
-                    ->color('secondary')
-                    ->toggleable(),
+                    ->color('secondary'),
                 
                 TextColumn::make('catatan')
                     ->label('Catatan')
                     ->searchable()
-                    ->limit(30)
-                    ->toggleable(),
+                    ->limit(30),
                 
                 TextColumn::make('created_at')
                     ->label('Dibuat')

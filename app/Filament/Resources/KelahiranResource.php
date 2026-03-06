@@ -278,8 +278,7 @@ class KelahiranResource extends Resource
 
             TextColumn::make('perkawinan.pejantan.kode_ternak')
                 ->label('Pejantan')
-                ->default('-')
-                ->toggleable(),
+                ->default('-'),
 
             TextColumn::make('tanggal_melahirkan')
                 ->label('Tanggal Lahir')
@@ -288,13 +287,11 @@ class KelahiranResource extends Resource
 
             TextColumn::make('tanggal_sapih')
                 ->label('Tanggal Sapih')
-                ->date('d M Y')
-                ->toggleable(),
+                ->date('d M Y'),
 
             TextColumn::make('status_sapih')
                 ->badge()
-                ->color(fn ($record) => $record->sisa_sapih_hari > 0 ? 'warning' : 'success')
-                ->toggleable(),
+                ->color(fn ($record) => $record->sisa_sapih_hari > 0 ? 'warning' : 'success'),
 
             TextColumn::make('jumlah_anak_lahir')
                 ->badge()
@@ -304,14 +301,12 @@ class KelahiranResource extends Resource
             TextColumn::make('jumlah_anak_hidup')
                 ->badge()
                 ->color('success')
-                ->sortable()
-                ->toggleable(),
+                ->sortable(),
 
             TextColumn::make('jumlah_anak_mati')
                 ->badge()
                 ->color('danger')
-                ->sortable()
-                ->toggleable(),
+                ->sortable(),
 
             TextColumn::make('mortalitas_rate')
                 ->label('Mortalitas %')
@@ -325,6 +320,8 @@ class KelahiranResource extends Resource
 
             TextColumn::make('created_at')
                 ->dateTime()
+                ->label('Dibuat')
+                ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
         ])
 

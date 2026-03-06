@@ -156,7 +156,6 @@ class PakanTernakResource extends Resource
 
                 TextColumn::make('ternak.id')
                     ->label('ID Ternak')
-                    ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('ternak.kode_ternak')
@@ -164,29 +163,24 @@ class PakanTernakResource extends Resource
                     ->weight('bold')
                     ->color('primary')
                     ->sortable()
-                    ->toggleable()
                     ->searchable(),
 
                 TextColumn::make('ternak.nama_ternak')
                     ->label('Nama Ternak')
-                    ->toggleable()
                     ->searchable(),
 
                 TextColumn::make('pakan.id')
                     ->label('ID Pakan')
-                    ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('pakan.kode_pakan')
                     ->label('Kode Pakan')
                     ->weight('bold')
                     ->color('success')
-                    ->toggleable()
                     ->sortable(),
 
                 TextColumn::make('pakan.nama_pakan')
                     ->label('Nama Pakan')
-                    ->toggleable()
                     ->searchable(),
 
                 TextColumn::make('jumlah')
@@ -202,8 +196,13 @@ class PakanTernakResource extends Resource
                 }),
                 TextColumn::make('tanggal')
                     ->date('d M Y')
+                    ->sortable(),
+                
+                TextColumn::make('created_at')
+                    ->dateTime('d M Y H:i')
+                    ->label('Dibuat')
                     ->sortable()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
 

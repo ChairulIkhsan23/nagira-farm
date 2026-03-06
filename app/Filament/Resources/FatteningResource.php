@@ -189,15 +189,13 @@ class FatteningResource extends Resource
                     ->label('Bobot Awal')
                     ->numeric(decimalPlaces: 1)
                     ->suffix(' kg')
-                    ->sortable()
-                    ->toggleable(),
+                    ->sortable(),
                 
                 TextColumn::make('bobot_terakhir')
                     ->label('Bobot Terakhir')
                     ->numeric(decimalPlaces: 1)
                     ->suffix(' kg')
                     ->sortable()
-                    ->toggleable()
                     ->color(fn ($record) => $record->bobot_terakhir >= $record->target_bobot ? 'success' : 'warning'),
                 
                 TextColumn::make('target_bobot')
@@ -205,7 +203,6 @@ class FatteningResource extends Resource
                     ->numeric(decimalPlaces: 1)
                     ->suffix(' kg')
                     ->sortable()
-                    ->toggleable()
                     ->color('info'),
                 
                 TextColumn::make('progress_persen')
@@ -223,21 +220,18 @@ class FatteningResource extends Resource
                 
                 TextColumn::make('tanggal_mulai')
                     ->date('d M Y')
-                    ->sortable()
-                    ->toggleable(),
+                    ->sortable(),
                 
                 TextColumn::make('tanggal_target_selesai')
                     ->date('d M Y')
                     ->sortable()
-                    ->toggleable()
                     ->color(fn ($record) => $record->is_overdue ? 'danger' : 'default'),
                 
                 TextColumn::make('sisa_hari')
                     ->label('Sisa Hari')
                     ->badge()
                     ->color(fn ($record) => $record->is_overdue ? 'danger' : 'success')
-                    ->formatStateUsing(fn ($record) => $record->is_overdue ? 'Terlambat' : $record->sisa_hari . ' hari')
-                    ->toggleable(),
+                    ->formatStateUsing(fn ($record) => $record->is_overdue ? 'Terlambat' : $record->sisa_hari . ' hari'),
                 
                 TextColumn::make('status')
                     ->searchable()
@@ -260,6 +254,12 @@ class FatteningResource extends Resource
                         'gagal' => 'heroicon-o-x-circle',
                         default => 'heroicon-o-question-mark-circle',
                     }),
+
+                TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('status')

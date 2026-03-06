@@ -174,8 +174,7 @@ class TernakResource extends Resource
                     ->label('Foto')
                     ->circular()
                     ->size(40)
-                    ->defaultImageUrl(url('/images/default-ternak.png'))
-                    ->toggleable(),
+                    ->defaultImageUrl(url('/images/default-ternak.png')),
                 
                 TextColumn::make('kode_ternak')
                     ->searchable()
@@ -193,8 +192,7 @@ class TernakResource extends Resource
                 TextColumn::make('jenis_ternak')
                     ->searchable()
                     ->badge()
-                    ->color('success')
-                    ->toggleable(),
+                    ->color('success'),
                     
                 TextColumn::make('kategori')
                     ->searchable()
@@ -237,8 +235,7 @@ class TernakResource extends Resource
                     
                 TextColumn::make('tanggal_lahir')
                     ->date('d M Y')
-                    ->sortable()
-                    ->toggleable(),
+                    ->sortable(),
                     
                 TextColumn::make('umur')
                     ->state(function (Ternak $record): string {
@@ -246,8 +243,7 @@ class TernakResource extends Resource
                     })
                     ->sortable(query: function (Builder $query, string $direction): Builder {
                         return $query->orderBy('tanggal_lahir', $direction);
-                    })
-                    ->toggleable(),
+                    }),
                     
                 TextColumn::make('status_aktif')
                     ->searchable()
@@ -259,6 +255,12 @@ class TernakResource extends Resource
                         'mati' => 'danger',
                         default => 'gray',
                     }),
+                
+                TextColumn::make('created_at')
+                    ->dateTime('d M Y H:i')
+                    ->label('Dibuat')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('jenis_ternak')

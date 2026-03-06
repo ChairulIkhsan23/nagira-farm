@@ -246,22 +246,19 @@ class PerkawinanResource extends Resource
 
             TextColumn::make('pejantan.kode_ternak')
                 ->label('Pejantan')
-                ->default('-')
-                ->toggleable(),
+                ->default('-'),
 
             TextColumn::make('tanggal_kawin')
                 ->date('d M Y')
                 ->sortable(),
 
             TextColumn::make('perkiraan_lahir')
-                ->date('d M Y')
-                ->toggleable(),
+                ->date('d M Y'),
 
             TextColumn::make('jenis_kawin')
                 ->badge()
                 ->formatStateUsing(fn ($state) => $state === 'IB' ? 'IB' : 'Alami')
-                ->color('info')
-                ->toggleable(),
+                ->color('info'),
 
             TextColumn::make('status_siklus')
                 ->badge()
@@ -276,6 +273,8 @@ class PerkawinanResource extends Resource
 
             TextColumn::make('created_at')
                 ->dateTime()
+                ->label('Dibuat')
+                ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
         ])
 

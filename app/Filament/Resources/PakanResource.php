@@ -133,19 +133,16 @@ class PakanResource extends Resource
                 ->copyMessage('Kode pakan copied')
                 ->weight('bold')
                 ->color('primary')
-                ->toggleable()
                 ->sortable(),
 
             TextColumn::make('jenis_pakan')
                 ->badge()
                 ->color('info')
                 ->searchable()
-                ->toggleable()
                 ->sortable(),
 
             TextColumn::make('nama_pakan')
                 ->searchable()
-                ->toggleable()
                 ->sortable(),
 
             TextColumn::make('stok')
@@ -158,11 +155,11 @@ class PakanResource extends Resource
                     $state <= 10 => 'warning',
                     default => 'success',
                 })
-                ->badge()
-                ->toggleable(),
+                ->badge(),
 
             TextColumn::make('created_at')
                 ->dateTime('d M Y H:i')
+                ->label('Dibuat')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
         ])
