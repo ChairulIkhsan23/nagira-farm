@@ -15,8 +15,8 @@ class PakanTernak extends Model
         'tanggal',
     ];
 
-   protected static function booted()
-{
+    protected static function booted()
+    {
     // =========================
     // CREATE
     // =========================
