@@ -33,7 +33,7 @@ class FatteningStats extends BaseWidget
                 ->color('success'),
 
             Stat::make('Gagal', $overdue)
-                ->description('Belum selesai melewati target')
+                ->description('Melewati target')
                 ->color($overdue > 0 ? 'danger' : 'success'),
 
         ];

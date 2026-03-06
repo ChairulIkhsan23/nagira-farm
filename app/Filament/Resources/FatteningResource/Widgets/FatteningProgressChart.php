@@ -9,6 +9,8 @@ class FatteningProgressChart extends ChartWidget
 {
     protected static ?string $heading = 'Status Program Fattening';
 
+    protected static ?string $maxHeight = '350px';
+
     protected function getData(): array
     {
         $progres = Fattening::where('status', 'progres')->count();
@@ -47,6 +49,13 @@ class FatteningProgressChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'doughnut';
+        return 'pie';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'maintainAspectRatio' => false,
+        ];
     }
 }
