@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ArtikelResource\Pages;
 use App\Models\Artikel;
-
 // Filament Core
 use Filament\Resources\Resource;
 use Filament\Forms\Form;
@@ -24,6 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 
 // Table Actions
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -121,11 +121,18 @@ class ArtikelResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                EditAction::make(),
-                DeleteAction::make()
-                    ->modalDescription('Yakin ingin menghapus artikel ini?')
-                    ->modalSubmitActionLabel('Ya, Hapus')
-                    ->modalCancelActionLabel('Batal'),
+                ActionGroup::make([
+                    EditAction::make()
+                        ->icon('heroicon-o-pencil')
+                        ->color('primary'),
+
+                    DeleteAction::make()
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->modalDescription('Yakin ingin menghapus artikel ini?')
+                        ->modalSubmitActionLabel('Ya, Hapus')
+                        ->modalCancelActionLabel('Batal'),
+                ]),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

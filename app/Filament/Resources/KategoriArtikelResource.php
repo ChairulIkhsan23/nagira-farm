@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 
 // Tables Actions
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -98,11 +99,18 @@ class KategoriArtikelResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make()
-                    ->modalDescription('Apakah Anda yakin ingin menghapus kategori ini? Data tidak dapat dikembalikan.')
-                    ->modalSubmitActionLabel('Ya, Hapus')
-                    ->modalCancelActionLabel('Batal'),
+                ActionGroup::make([
+                    EditAction::make()
+                        ->icon('heroicon-o-pencil')
+                        ->color('primary'),
+
+                    DeleteAction::make()
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->modalDescription('Apakah Anda yakin ingin menghapus kategori ini? Data tidak dapat dikembalikan.')
+                        ->modalSubmitActionLabel('Ya, Hapus')
+                        ->modalCancelActionLabel('Batal'),
+                ]),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
