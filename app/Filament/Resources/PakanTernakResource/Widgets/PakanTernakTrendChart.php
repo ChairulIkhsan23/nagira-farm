@@ -1,51 +1,50 @@
 <?php
 
-namespace App\Filament\Resources\KesehatanResource\Widgets;
+namespace App\Filament\Resources\PakanTernakResource\Widgets;
 
-use App\Models\Kesehatan;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Carbon;
+use App\Models\PakanTernak;
+use Carbon\Carbon;
 
-class KesehatanTrendChart extends ChartWidget
+class PakanTernakTrendChart extends ChartWidget
 {
-    protected static ?string $heading = 'Trend Pemeriksaan 6 Bulan Terakhir';
+    protected static ?string $heading = 'Trend Pemberian Pakan 6 Bulan Terakhir';
     
-    // Tambahkan chartId untuk unique
-    protected static string $chartId = 'kesehatan-trend-chart';
-
-    protected function getType(): string
-    {
-        return 'line';
-    }
+    protected static string $chartId = 'pakan-ternak-trend-chart';
 
     protected function getData(): array
     {
-        $data = [];
         $labels = [];
+        $data = [];
 
         for ($i = 5; $i >= 0; $i--) {
             $date = Carbon::now()->subMonths($i);
             $labels[] = $date->format('M Y');
             
-            $count = Kesehatan::whereMonth('tanggal_periksa', $date->month)
-                ->whereYear('tanggal_periksa', $date->year)
+            $count = PakanTernak::whereYear('tanggal', $date->year)
+                ->whereMonth('tanggal', $date->month)
                 ->count();
-
+            
             $data[] = $count;
         }
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Jumlah Pemeriksaan',
+                    'label' => 'Jumlah Pemberian Pakan',
                     'data' => $data,
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#2196F3',
-                    'tension' => 0.4, // Biar garisnya fleksibel
+                    'tension' => 0.4,
                 ],
             ],
             'labels' => $labels,
         ];
+    }
+
+    protected function getType(): string
+    {
+        return 'line';
     }
     
     protected function getHeight(): int

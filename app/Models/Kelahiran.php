@@ -53,6 +53,13 @@ class Kelahiran extends Model
 
         static::created(function ($kelahiran) {
 
+            // UPDATE STATUS PERKAWINAN MENJADI MELAHIRKAN
+            if ($kelahiran->perkawinan) {
+                $kelahiran->perkawinan->update([
+                    'status_siklus' => 'melahirkan'
+                ]);
+            }
+
             if (!$kelahiran->detail_anak || !$kelahiran->betina_id) {
                 return;
             }
@@ -78,6 +85,24 @@ class Kelahiran extends Model
                     'induk_id'      => $kelahiran->betina_id,
                     'pejantan_id'   => $pejantanId,
                     'berat_lahir'   => $anak['berat_lahir'] ?? null,
+                ]);
+            }
+        });
+
+        static::updated(function ($kelahiran) {
+            // UPDATE STATUS PERKAWINAN KETIKA KELAHIRAN DIUPDATE
+            if ($kelahiran->perkawinan) {
+                $kelahiran->perkawinan->update([
+                    'status_siklus' => 'melahirkan'
+                ]);
+            }
+        });
+
+        static::deleted(function ($kelahiran) {
+            // KEMBALIKAN STATUS PERKAWINAN KE BUNTING JIKA KELAHIRAN DIHAPUS
+            if ($kelahiran->perkawinan) {
+                $kelahiran->perkawinan->update([
+                    'status_siklus' => 'bunting'
                 ]);
             }
         });

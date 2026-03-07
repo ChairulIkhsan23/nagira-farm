@@ -114,24 +114,26 @@ class KelahiranResource extends Resource
                         ->collapsible(),
 
                     // ================= PERKAWINAN ================= //
-                    Select::make('perkawinan_id')
-                        ->label('Data Perkawinan')
-                        ->reactive()
-                        ->searchable()
-                        ->required()
-                        ->visible(fn ($get) => filled($get('betina_id')))
-                        ->options(fn ($get) => filled($get('betina_id'))
-                            ? Perkawinan::with('pejantan')
-                                ->where('betina_id', $get('betina_id'))
-                                ->whereIn('status_siklus', ['kawin','bunting'])
-                                ->orderBy('tanggal_kawin', 'desc')
-                                ->get()
-                                ->mapWithKeys(fn ($p) => [
-                                    $p->id => Carbon::parse($p->tanggal_kawin)->format('d M Y') .
-                                        ' | ' . ($p->pejantan?->kode_ternak ?? '-')
-                                ])
-                            : []
-                        )
+                    // Di KelahiranResource.php pada bagian Select 'perkawinan_id'
+                        Select::make('perkawinan_id')
+                            ->label('Data Perkawinan')
+                            ->reactive()
+                            ->searchable()
+                            ->required()
+                            ->visible(fn ($get) => filled($get('betina_id')))
+                            ->options(fn ($get) => filled($get('betina_id'))
+                                ? Perkawinan::with('pejantan')
+                                    ->where('betina_id', $get('betina_id'))
+                                    ->whereIn('status_siklus', ['kawin','bunting'])
+                                    ->whereDoesntHave('kelahiran') // Hanya tampilkan yang belum punya kelahiran
+                                    ->orderBy('tanggal_kawin', 'desc')
+                                    ->get()
+                                    ->mapWithKeys(fn ($p) => [
+                                        $p->id => Carbon::parse($p->tanggal_kawin)->format('d M Y') .
+                                            ' | ' . ($p->pejantan?->kode_ternak ?? '-')
+                                    ])
+                                : []
+                            )
                         ->afterStateUpdated(function ($state, callable $set) {
 
                             $kawin = Perkawinan::with('pejantan')->find($state);

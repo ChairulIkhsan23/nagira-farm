@@ -22,7 +22,7 @@ class KesehatanStats extends BaseWidget
                 ->icon('heroicon-o-check-circle'),
 
             Stat::make('Sakit', Kesehatan::sakit()->count())
-                ->description('Butuh perhatian')
+                ->description('Butuh penanganan')
                 ->color('warning')
                 ->icon('heroicon-o-exclamation-circle'),
 
