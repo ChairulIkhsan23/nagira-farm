@@ -5,11 +5,11 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Pengaturan;
 use App\Filament\Widgets\AccountInfo;
 use App\Filament\Widgets\ArtikelOverview;
-use App\Filament\Widgets\ArtikelPerBulanChart;
+use App\Filament\Widgets\TrenPerkawinanChart;
 use App\Filament\Widgets\GeneralOverview;
 use App\Filament\Widgets\PopulasiKambingChart;
 use App\Filament\Widgets\TernakTerbaru;
-use App\Filament\Widgets\UmurKambingChart;
+use App\Filament\Widgets\StatusFatteningChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -56,10 +56,10 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountInfo::class,
                 GeneralOverview::class,
-                PopulasiKambingChart::class,
                 TernakTerbaru::class,
-                UmurKambingChart::class,
-                ArtikelPerBulanChart::class,
+                PopulasiKambingChart::class,
+                StatusFatteningChart::class,
+                TrenPerkawinanChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

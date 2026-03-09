@@ -47,4 +47,9 @@ class PopulasiKambingChart extends ChartWidget
     {
         return 'line';
     }
+     // DIPERBESAR jadi 400px atau 500px
+    protected static ?string $maxHeight = '100px';
+    
+    // Full width biar lebih dominan
+    protected int | string | array $columnSpan = 'full';
 }
