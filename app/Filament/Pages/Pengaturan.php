@@ -2,33 +2,25 @@
 
 namespace App\Filament\Pages;
 
-// Filament Core
 use Filament\Pages\Page;
 use Filament\Forms\Form;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
-
-// Filament Forms
-use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-
-// Laravel
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class Pengaturan extends Page implements Forms\Contracts\HasForms
+class Pengaturan extends Page implements HasForms
 {
-    use Forms\Concerns\InteractsWithForms;
+    use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-
     protected static ?string $navigationLabel = 'Pengaturan';
-
     protected static ?string $navigationGroup = 'Pengaturan';
-
     protected static string $view = 'filament.pages.pengaturan';
-
     protected static ?int $navigationSort = 1;
 
     public ?array $data = [];
@@ -39,10 +31,10 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
 
         $this->form->fill([
             'name' => $user->name,
-            'nama_lengkap' => $user->nama_lengkap,
-            'email'        => $user->email,
-            'no_telp'      => $user->no_telp,
-            'foto'         => $user->foto,
+            'nama_lengkap' => $user->nama_lengkap ?? $user->name,
+            'email' => $user->email,
+            'no_telp' => $user->no_telp,
+            'foto' => $user->foto,
         ]);
     }
 
@@ -56,30 +48,36 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
                         FileUpload::make('foto')
                             ->label('Foto Profil')
                             ->image()
-                            ->avatar() 
-                            ->directory('users') 
+                            ->avatar()
+                            ->directory('users')
                             ->disk('public')
-                            ->visibility('public')
                             ->imageEditor()
                             ->maxSize(2048)
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->helperText('Upload foto profil Anda (maks. 2MB)'),
 
                         TextInput::make('name')
                             ->label('Username')
-                            ->required(),
+                            ->required()
+                            ->maxLength(255),
 
                         TextInput::make('nama_lengkap')
                             ->label('Nama Lengkap')
-                            ->required(),
+                            ->required()
+                            ->maxLength(255),
 
                         TextInput::make('email')
+                            ->label('Email')
                             ->email()
-                            ->required(),
+                            ->required()
+                            ->maxLength(255)
+                            ->unique(ignoreRecord: true),
 
                         TextInput::make('no_telp')
                             ->label('No. Telepon')
-                            ->tel(),
-
+                            ->tel()
+                            ->maxLength(20)
+                            ->helperText('Contoh: 081234567890'),
                     ]),
 
                 Section::make('Keamanan')
@@ -94,8 +92,10 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
                         TextInput::make('password_confirmation')
                             ->label('Konfirmasi Password')
                             ->password()
+                            ->revealable()
                             ->same('password')
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->visible(fn ($get) => filled($get('password'))),
                     ]),
             ])
             ->statePath('data');
@@ -106,11 +106,19 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
         $user = Auth::user();
         $data = $this->form->getState();
 
-        // Handle password manual (override cast)
+        // Handle password
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
+        }
+        
+        // Hapus password_confirmation dari data
+        unset($data['password_confirmation']);
+
+        // Handle foto jika ada
+        if (isset($data['foto']) && is_string($data['foto'])) {
+            // Foto sudah dihandle otomatis oleh FileUpload
         }
 
         $user->update($data);
@@ -119,5 +127,17 @@ class Pengaturan extends Page implements Forms\Contracts\HasForms
             ->title('Pengaturan berhasil disimpan')
             ->success()
             ->send();
+    }
+
+    // Optional: Tambahkan method ini untuk mendapatkan title halaman
+    public function getTitle(): string
+    {
+        return 'Pengaturan Akun';
+    }
+
+    // Optional: Tambahkan method ini untuk mendapatkan heading halaman
+    public function getHeading(): string
+    {
+        return 'Pengaturan Akun';
     }
 }
