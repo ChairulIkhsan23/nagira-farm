@@ -87,7 +87,8 @@
                         color="gray"
                         icon="heroicon-o-question-mark-circle"
                         tag="a"
-                        href="#"
+                        href="https://wa.me/6285861236439?text=Halo%20Admin%20Nagira%20Farm%2C%20saya%20butuh%20bantuan%20untuk%20menggunakan%20sistem%20manajemen%20peternakan.%20Bisakah%20Anda%20membantu%3F"
+                        target="_blank"
                         size="sm"
                     >
                         Bantuan
