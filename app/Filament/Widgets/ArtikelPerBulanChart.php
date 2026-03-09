@@ -33,6 +33,8 @@ class ArtikelPerBulanChart extends ChartWidget
                     'label' => 'Artikel',
                     'data' => $values,
                     'borderColor' => '#22c55e',
+                    'tension' => 0.3,
+                    'fill' => false,
                 ],
             ],
             'labels' => $labels,
