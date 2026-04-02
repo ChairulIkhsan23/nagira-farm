@@ -18,6 +18,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
             
+            # SEO fields
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
+
             // Indexes
             $table->index('nama_kategori');
         });

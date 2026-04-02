@@ -17,16 +17,26 @@ return new class extends Migration
             $table->foreignId('kategori_id')->nullable()->constrained('kategori_artikels')->onDelete('set null');
             $table->string('judul');
             $table->string('foto')->nullable();
+            $table->string('og_image')->nullable();
             $table->longText('isi');
-            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->text('excerpt')->nullable();
+            $table->enum('status', ['draft', 'published', 'archive', 'scheduled'])->default('draft');
+            $table->unsignedBigInteger('views')->default(0);
+            $table->boolean('is_featured')->default(false);
             $table->timestamp('tanggal_publish')->nullable();
             $table->softDeletes();
             $table->timestamps();
+            
+            # SEO fields
+            $table->string('meta_title')->nullable();
+            $table->text('meta_description')->nullable();
             
             // Indexes
             $table->index('judul');
             $table->index('status');
             $table->index('tanggal_publish');
+            $table->index('is_featured');
+            $table->index('kategori_id');
         });
     }
 
