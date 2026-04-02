@@ -19,9 +19,14 @@ class Artikel extends Model
         'kategori_id',
         'judul',
         'foto',
+        'og_image',
         'isi',
+        'excerpt',
         'status',
         'tanggal_publish',
+        'is_featured',
+        'meta_title',
+        'meta_description',
     ];
 
     protected $casts = [
@@ -61,6 +66,12 @@ class Artikel extends Model
                 $artikel->tanggal_publish = now();
             }
         });
+
+        static::saving(function ($artikel) {
+            if (empty($artikel->getRawOriginal('excerpt')) && !empty($artikel->isi)) {
+                $artikel->excerpt = str()->limit(strip_tags($artikel->isi), 200);
+            }
+        });
     }
 
     /**
@@ -74,9 +85,16 @@ class Artikel extends Model
     /**
      * Accessor for excerpt.
      */
-    public function getExcerptAttribute(int $length = 200): string
+    public function getExcerptAttribute($value): ?string
     {
-        return str()->limit(strip_tags($this->isi), $length);
+        if (!empty($value)) {
+            return $value;
+        }
+
+        if (!empty($this->isi)) {
+            return str()->limit(strip_tags($this->isi), 200);
+        }
+        return null;
     }
 
     /**
@@ -140,6 +158,16 @@ class Artikel extends Model
     public function kategori()
     {
         return $this->belongsTo(KategoriArtikel::class, 'kategori_id');
+    }
+
+    /**
+     * Get the komentars for the artikel.
+    */
+    public function komentars()
+    {
+        return $this->hasMany(Komentars::class)
+            ->whereNull('parent_id');
+            // ->where('is_approved', true);
     }
 
     // ===================== SCOPES =====================

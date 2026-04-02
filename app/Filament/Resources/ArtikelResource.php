@@ -17,6 +17,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Toggle;
 
 // Tables
 use Filament\Tables\Columns\TextColumn;
@@ -31,6 +32,9 @@ use Filament\Tables\Actions\DeleteBulkAction;
 
 // Laravel
 use Illuminate\Database\Eloquent\Builder;
+
+// Relation Managers
+use App\Filament\Resources\ArtikelResource\RelationManagers\KomentarsRelationManager;
 
 class ArtikelResource extends Resource
 {
@@ -71,21 +75,58 @@ class ArtikelResource extends Resource
                     FileUpload::make('foto')
                         ->image()
                         ->directory('artikel'),
+                    
+                    FileUpload::make('og_image')
+                        ->image()
+                        ->label('OG Image')
+                        ->directory('artikel/og_images')
+                        ->imageResizeMode('cover')
+                        ->imageCropAspectRatio('1.91:1')
+                        ->imageResizeTargetWidth(1200)
+                        ->imageResizeTargetHeight(630)
+                        ->helperText('Gambar OG untuk media sosial, rasio 1.91:1, ukuran minimal 1200x630px'),
 
                     RichEditor::make('isi')
                         ->required()
                         ->columnSpanFull(),
+                    
+                    Textarea::make('excerpt')
+                        ->label('Ringkasan')
+                        ->maxLength(500)
+                        ->helperText('Ringkasan singkat artikel, maksimal 200 karakter')
+                        ->disabled(),
 
                     Select::make('status')
                         ->options([
                             'draft' => 'Draft',
                             'published' => 'Publish',
+                            'archive' => 'Archived',
+                            'scheduled' => 'Scheduled',
                         ])
                         ->required(),
+                    
+                    Toggle::make('is_featured')
+                        ->label('Artikel Unggulan')
+                        ->helperText('Tandai jika artikel ini adalah artikel unggulan'),
 
                     DateTimePicker::make('tanggal_publish')
                         ->label('Tanggal Publish'),
                 ]),
+            Section::make('SEO')
+                ->collapsed()
+                ->schema([
+                    TextInput::make('meta_title')
+                        ->label('Meta Title')
+                        ->maxLength(60)
+                        ->helperText('Judul SEO, maksimal 60 karakter'),
+
+                    Textarea::make('meta_description')
+                        ->label('Meta Description')
+                        ->rows(3)
+                        ->maxLength(160)
+                        ->helperText('Deskripsi SEO, maksimal 160 karakter'),
+                ])
+                ->collapsed(),
         ]);
     }
 
@@ -102,12 +143,20 @@ class ArtikelResource extends Resource
                 TextColumn::make('kategori.nama_kategori')
                     ->label('Kategori')
                     ->sortable(),
-
+                
                 BadgeColumn::make('status')
                     ->colors([
                         'gray' => 'draft',
-                        'success' => 'publish',
+                        'success' => 'published',
+                        'danger' => 'archive',
+                        'warning' => 'scheduled',
                     ]),
+
+                TextColumn::make('featured')
+                    ->label('Unggulan')
+                    ->formatStateUsing(fn ($state) => $state ? 'Ya' : 'Tidak')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('tanggal_publish')
                     ->dateTime('d M Y')
@@ -147,6 +196,13 @@ class ArtikelResource extends Resource
             'index' => Pages\ListArtikels::route('/'),
             'create' => Pages\CreateArtikel::route('/create'),
             'edit' => Pages\EditArtikel::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            KomentarsRelationManager::class,
         ];
     }
 
