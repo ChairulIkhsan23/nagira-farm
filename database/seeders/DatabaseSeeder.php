@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\KategoriArtikel;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Laravel\Prompts\Key;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,12 +19,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
         $this->call([
+            KategoriArtikelSeeder::class,
+            ArtikelSeeder::class,
             TernakSeeder::class,
             PengaduanSeeder::class,
             // Seeder lainnya
