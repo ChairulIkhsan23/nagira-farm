@@ -9,6 +9,7 @@ use App\Models\Ternak;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
 class TernakController extends Controller
 {
     /**
@@ -51,34 +52,6 @@ class TernakController extends Controller
     }
     
     /**
-     * Display the specified resource.
-     */
-    public function show(string $slug)
-    {
-        $ternak = Ternak::where('slug', $slug)
-            ->where('status_aktif', 'aktif')
-            ->with(['induk', 'pejantan', 'riwayatTimbangs' => function($q) {
-                $q->latest()->limit(5);
-            }, 'kesehatans' => function($q) {
-                $q->latest()->limit(5);
-            }])
-            ->first();
-        
-        if (!$ternak) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data ternak tidak ditemukan'
-            ], Response::HTTP_NOT_FOUND);
-        }
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Detail ternak berhasil diambil',
-            'data' => new TernakResource($ternak)
-        ], Response::HTTP_OK);
-    }
-    
-    /**
      * Get ternak by jenis.
      */
     public function byJenis(string $jenis, Request $request)
@@ -94,5 +67,121 @@ class TernakController extends Controller
             'message' => "Data ternak jenis {$jenis} berhasil diambil",
             'data' => new TernakCollection($ternaks)
         ], Response::HTTP_OK);
+    }
+    /**
+     * Get ternak by slug with category-specific data.
+     */
+    public function getBySlug($slug)
+    {
+        $ternak = Ternak::with([
+            'fattening', 
+            'perkawinanSebagaiBetina' => function($q) {
+                $q->latest('tanggal_kawin')->with(['pejantan']);
+            },
+            'perkawinanSebagaiPejantan' => function($q) {
+                $q->latest('tanggal_kawin')->with(['betina']);
+            },
+            'latestTimbangan',
+            'riwayatTimbangs' => function($q) {
+                $q->latest()->limit(5);
+            }
+        ])->where('slug', $slug)->first();
+        
+        if (!$ternak) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ternak tidak ditemukan'
+            ], 404);
+        }
+        
+        $response = $ternak->toApiResponse();
+        
+        // Add category-specific data
+        if ($ternak->kategori === 'fattening' && $ternak->fattening) {
+            $response['data_kategori'] = [
+                'type' => 'fattening',
+                'program' => [
+                    'bobot_awal' => $ternak->fattening->bobot_awal,
+                    'bobot_terakhir' => $ternak->fattening->bobot_terakhir,
+                    'target_bobot' => $ternak->fattening->target_bobot,
+                    'tanggal_mulai' => $ternak->fattening->tanggal_mulai,
+                    'tanggal_target_selesai' => $ternak->fattening->tanggal_target_selesai,
+                    'status' => $ternak->fattening->status,
+                    'progress_persen' => $this->calculateProgress($ternak->fattening),
+                    'keterangan' => $ternak->fattening->keterangan,
+                ]
+            ];
+        } elseif ($ternak->kategori === 'breeding') {
+            $latestPerkawinan = $ternak->perkawinanSebagaiBetina->first() ?? $ternak->perkawinanSebagaiPejantan->first();
+            
+            if ($latestPerkawinan) {
+                $response['data_kategori'] = [
+                    'type' => 'breeding',
+                    'perkawinan_terakhir' => [
+                        'tanggal_kawin' => $latestPerkawinan->tanggal_kawin,
+                        'jenis_kawin' => $latestPerkawinan->jenis_kawin,
+                        'jenis_kawin_label' => $latestPerkawinan->jenis_kawin === 'alami' ? 'Alami' : 'Inseminasi Buatan',
+                        'status_siklus' => $latestPerkawinan->status_siklus,
+                        'status_label' => $this->getStatusLabel($latestPerkawinan->status_siklus),
+                        'perkiraan_lahir' => $latestPerkawinan->perkiraan_lahir,
+                        'pejantan' => $latestPerkawinan->pejantan ? [
+                            'nama' => $latestPerkawinan->pejantan->nama_ternak,
+                            'kode' => $latestPerkawinan->pejantan->kode_ternak,
+                            'slug' => $latestPerkawinan->pejantan->slug,
+                        ] : null,
+                        'keterangan' => $latestPerkawinan->keterangan,
+                    ]
+                ];
+                
+                // Add gestation info if bunting
+                if ($latestPerkawinan->status_siklus === 'bunting' && $latestPerkawinan->perkiraan_lahir) {
+                    $response['data_kategori']['perkawinan_terakhir']['hari_menuju_lahir'] = now()->diffInDays($latestPerkawinan->perkiraan_lahir, false);
+                }
+            } else {
+                $response['data_kategori'] = [
+                    'type' => 'breeding',
+                    'message' => 'Belum ada data perkawinan'
+                ];
+            }
+        } else {
+            $response['data_kategori'] = null;
+        }
+        
+        // Add timbangan history
+        $response['riwayat_timbangan'] = $ternak->riwayatTimbangs->map(function($timbang) {
+            return [
+                'tanggal' => $timbang->tanggal_timbang->format('Y-m-d'),
+                'bobot' => $timbang->bobot,
+                'keterangan' => $timbang->keterangan,
+            ];
+        });
+        
+        return response()->json([
+            'success' => true,
+            'data' => $response
+        ]);
+    }
+    
+    private function calculateProgress($fattening)
+    {
+        if (!$fattening->target_bobot || $fattening->target_bobot <= 0) {
+            return 0;
+        }
+        
+        $currentBobot = $fattening->bobot_terakhir ?? $fattening->bobot_awal ?? 0;
+        return round(($currentBobot / $fattening->target_bobot) * 100, 1);
+    }
+    
+    private function getStatusLabel($status)
+    {
+        $labels = [
+            'kosong' => 'Kosong',
+            'kawin' => 'Kawin',
+            'bunting' => 'Bunting',
+            'gagal' => 'Gagal',
+            'melahirkan' => 'Melahirkan'
+        ];
+        
+        return $labels[$status] ?? $status;
     }
 }

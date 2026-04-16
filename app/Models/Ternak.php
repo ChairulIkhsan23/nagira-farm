@@ -24,6 +24,7 @@ class Ternak extends Model
     'kategori',
     'jenis_kelamin',
     'tanggal_lahir',
+    'bobot',   
     'foto',
     'status_aktif',
     'induk_id',
@@ -44,6 +45,7 @@ class Ternak extends Model
 
     protected $attributes = [
     'status_aktif' => 'aktif',
+    'bobot' => 0,  
 ];
     /**
      * Boot the model.
@@ -493,6 +495,19 @@ class Ternak extends Model
      */
     public function toApiResponse(): array
     {
+        // Ambil nilai bobot
+        $bobotValue = $this->bobot ?? 0;
+        
+        // Jika bobot 0 atau null, coba ambil dari latest timbangan
+        if ($bobotValue == 0 && $this->latestTimbangan) {
+            $bobotValue = $this->latestTimbangan->bobot;
+        }
+        
+        // Jika masih 0, coba ambil dari fattening
+        if ($bobotValue == 0 && $this->fattening && $this->fattening->bobot_terakhir) {
+            $bobotValue = $this->fattening->bobot_terakhir;
+        }
+        
         return [
             'id' => $this->id,
             'slug' => $this->slug,
@@ -509,6 +524,7 @@ class Ternak extends Model
                 'icon' => $this->jenis_kelamin_icon,
             ],
             'tanggal_lahir' => $this->tanggal_lahir?->format('Y-m-d'),
+            'bobot' => $bobotValue,  // TAMBAHKAN INI
             'umur' => [
                 'bulan' => $this->umur_bulan,
                 'tahun' => $this->umur_tahun,

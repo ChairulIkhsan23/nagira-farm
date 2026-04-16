@@ -20,6 +20,7 @@ class TernakResource extends JsonResource
             'kode_ternak' => $this->kode_ternak,
             'nama_ternak' => $this->nama_ternak,
             'jenis_ternak' => $this->jenis_ternak,
+            'kategori' => $this->kategori,
             'jenis_kelamin' => $this->jenis_kelamin,
             'tanggal_lahir' => $this->tanggal_lahir?->format('Y-m-d'),
             'umur' => $this->tanggal_lahir ? now()->diffInMonths($this->tanggal_lahir) . ' bulan' : null,

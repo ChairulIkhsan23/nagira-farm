@@ -36,7 +36,7 @@ class ArtikelController extends Controller
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
         
-        $perPage = $request->get('per_page', 10);
+        $perPage = $request->get('per_page', 12);
         $artikels = $query->paginate($perPage);
         
         return response()->json([

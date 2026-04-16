@@ -21,7 +21,7 @@ class ArtikelResource extends JsonResource
             'excerpt' => $this->excerpt,
             'foto' => $this->foto ? asset('storage/' . $this->foto) : null,
             'og_image' => $this->og_image ? asset('storage/' . $this->og_image) : null,
-            'isi' => $request->routeIs('api.v1.artikel.show') ? $this->isi : null, // Hanya tampilkan isi lengkap di detail
+            'isi' => $this->isi, 
             'status' => $this->status,
             'views' => $this->views,
             'is_featured' => $this->is_featured,
