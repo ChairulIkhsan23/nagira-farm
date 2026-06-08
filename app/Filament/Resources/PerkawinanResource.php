@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\PerkawinanResource\Pages;
 use App\Models\Perkawinan;
 use App\Models\Ternak;
@@ -10,7 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-// Form Components
+
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -19,7 +20,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 
-// Table Components
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
@@ -31,6 +32,8 @@ use Filament\Tables\Filters\Filter;
 
 class PerkawinanResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Perkawinan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-heart';
@@ -39,7 +42,7 @@ class PerkawinanResource extends Resource
     protected static ?string $modelLabel = 'Breeding';
     protected static ?string $pluralModelLabel = 'Data Breeding';
 
-    // ================= FORM ================= //
+    
 
     public static function form(Form $form): Form
     {
@@ -51,7 +54,7 @@ class PerkawinanResource extends Resource
 
                     Grid::make(2)->schema([
 
-                        // BETINA
+                        
                         Select::make('betina_id')
                             ->label('Induk Betina')
                             ->relationship(
@@ -83,11 +86,11 @@ class PerkawinanResource extends Resource
                                     $diff = \Carbon\Carbon::parse($ternak->tanggal_lahir)->diff(now());
                                     $umur = $diff->y * 12 + $diff->m;
 
-                                    // WARNING REPRODUKSI
+                                    
                                     if ($umur < 10) {
-                                        $warning = "⚠️ Umur betina belum layak kawin (<10 bulan)";
+                                        $warning = "️ Umur betina belum layak kawin (<10 bulan)";
                                     } elseif ($umur > 60) {
-                                        $warning = "⚠️ Betina sudah tua untuk breeding";
+                                        $warning = "️ Betina sudah tua untuk breeding";
                                     }
                                 }
 
@@ -98,7 +101,7 @@ class PerkawinanResource extends Resource
                             })
                             
                             ->required(),
-                        // PEJANTAN
+                        
                         Select::make('pejantan_id')
                         ->label('Pejantan')
                         ->relationship(
@@ -106,7 +109,7 @@ class PerkawinanResource extends Resource
                             'kode_ternak',
                             fn (Builder $query) => $query
                                 ->where('jenis_kelamin', 'Jantan')
-                                ->whereDate('tanggal_lahir', '<=', now()->subMonths(10)) // MIN 10 BULAN
+                                ->whereDate('tanggal_lahir', '<=', now()->subMonths(10)) 
                                 ->whereDoesntHave('perkawinanSebagaiPejantan', function ($q) {
                                     $q->whereIn('status_siklus', ['kawin', 'bunting']);
                                 })
@@ -125,9 +128,9 @@ class PerkawinanResource extends Resource
                                 $umur = $diff->y * 12 + $diff->m;
 
                                 if ($umur < 10) {
-                                    $warning = "⚠️ Pejantan belum matang seksual (<10 bulan)";
+                                    $warning = "️ Pejantan belum matang seksual (<10 bulan)";
                                 } elseif ($umur > 120) {
-                                    $warning = "⚠️ Pejantan terlalu tua untuk performa optimal";
+                                    $warning = "️ Pejantan terlalu tua untuk performa optimal";
                                 }
                             }
 
@@ -138,7 +141,7 @@ class PerkawinanResource extends Resource
                         })
                         ->nullable(),
                     ]),
-                    // ===== STATE STORAGE (WAJIB) =====
+                    
                     TextInput::make('betina_warning')->hidden(),
                     TextInput::make('pejantan_warning')->hidden(),
                     TextInput::make('betina_kode')->hidden(),
@@ -230,7 +233,7 @@ class PerkawinanResource extends Resource
         ]);
     }
 
-    // ================= TABLE ================= //
+    
 
     public static function table(Table $table): Table
 {
@@ -336,7 +339,7 @@ class PerkawinanResource extends Resource
         ->defaultSort('tanggal_kawin', 'desc')
         ->striped();
 }
-    // ================= PAGES ================= //
+    
 
     public static function getPages(): array
     {

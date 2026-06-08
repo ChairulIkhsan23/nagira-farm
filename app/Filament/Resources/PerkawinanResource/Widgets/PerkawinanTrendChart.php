@@ -10,7 +10,7 @@ class PerkawinanTrendChart extends ChartWidget
 {
     protected static ?string $heading = 'Trend Perkawinan 6 Bulan Terakhir';
     
-    // Tambahkan chartId untuk unique
+    
     protected static string $chartId = 'perkawinan-trend-chart';
 
     protected function getData(): array

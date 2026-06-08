@@ -23,8 +23,8 @@ class PerkawinanFactory extends Factory
         };
         
         return [
-            'betina_id' => null, // Akan diisi saat create
-            'pejantan_id' => null, // Akan diisi saat create
+            'betina_id' => null, 
+            'pejantan_id' => null, 
             'tanggal_kawin' => $tanggalKawin,
             'jenis_kawin' => $this->faker->randomElement(['alami', 'IB']),
             'status_siklus' => $statusSiklus,

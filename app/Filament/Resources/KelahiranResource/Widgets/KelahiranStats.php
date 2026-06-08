@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class KelahiranStats extends BaseWidget
 {
-    protected static ?int $sort = 1; // Tambahkan ini biar bisa diurutkan
+    protected static ?int $sort = 1; 
 
     protected function getStats(): array
     {
@@ -50,6 +50,6 @@ class KelahiranStats extends BaseWidget
     
     protected function getColumns(): int
     {
-        return 3; // Ubah dari 5 jadi 3 karena kita cuma punya 3 stat
+        return 3; 
     }
 }

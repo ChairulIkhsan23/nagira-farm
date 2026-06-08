@@ -12,7 +12,7 @@ class ArtikelSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ambil ID kategori
+        
         $kategoriIds = KategoriArtikel::pluck('id', 'nama_kategori')->toArray();
         
         $artikels = [

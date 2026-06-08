@@ -32,7 +32,7 @@ class CreateKategoriArtikel extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        // redirect ke halaman daftar kategiri artikel setelah pembuatan
+        
         return $this->getResource()::getUrl('index');
     }
 }

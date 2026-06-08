@@ -10,26 +10,24 @@ use Illuminate\Validation\Rule;
 
 class FatteningController extends Controller
 {
-    /**
-     * Display a listing of fattenings.
-     */
+    
     public function index(Request $request)
     {
         $query = Fattening::with(['ternak' => function($q) {
             $q->with(['latestTimbangan']);
         }]);
         
-        // Filter by status
+        
         if ($request->has('status')) {
             $query->where('status', $request->status);
         }
         
-        // Filter by ternak
+        
         if ($request->has('ternak_id')) {
             $query->where('ternak_id', $request->ternak_id);
         }
         
-        // Filter by date range
+        
         if ($request->has('tanggal_mulai_from')) {
             $query->where('tanggal_mulai', '>=', $request->tanggal_mulai_from);
         }
@@ -40,7 +38,7 @@ class FatteningController extends Controller
         
         $fattenings = $query->orderBy('created_at', 'desc')->paginate(15);
         
-        // Add additional data for each fattening
+        
         $fattenings->getCollection()->transform(function ($fattening) {
             return $this->formatFatteningResponse($fattening);
         });
@@ -51,9 +49,7 @@ class FatteningController extends Controller
         ]);
     }
     
-    /**
-     * Store a newly created fattening.
-     */
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -68,11 +64,11 @@ class FatteningController extends Controller
         try {
             DB::beginTransaction();
             
-            // Set default values
+            
             $validated['status'] = 'progres';
             $validated['bobot_terakhir'] = $validated['bobot_awal'] ?? null;
             
-            // Update ternak kategori to fattening if not already
+            
             $ternak = Ternak::find($validated['ternak_id']);
             if ($ternak && $ternak->kategori !== 'fattening') {
                 $ternak->kategori = 'fattening';
@@ -98,9 +94,7 @@ class FatteningController extends Controller
         }
     }
     
-    /**
-     * Display the specified fattening.
-     */
+    
     public function show($id)
     {
         $fattening = Fattening::with(['ternak' => function($q) {
@@ -120,9 +114,7 @@ class FatteningController extends Controller
         ]);
     }
     
-    /**
-     * Get fattening by ternak slug.
-     */
+    
     public function getByTernakSlug($slug)
     {
         $ternak = Ternak::where('slug', $slug)->first();
@@ -153,9 +145,7 @@ class FatteningController extends Controller
         ]);
     }
     
-    /**
-     * Update the specified fattening.
-     */
+    
     public function update(Request $request, $id)
     {
         $fattening = Fattening::find($id);
@@ -182,7 +172,7 @@ class FatteningController extends Controller
             
             $fattening->update($validated);
             
-            // If status is 'selesai' and bobot_terakhir not set, use latest bobot from timbangan
+            
             if ($fattening->status === 'selesai' && !$fattening->bobot_terakhir) {
                 $latestBobot = $fattening->ternak?->latest_bobot;
                 if ($latestBobot) {
@@ -208,9 +198,7 @@ class FatteningController extends Controller
         }
     }
     
-    /**
-     * Update bobot terakhir for fattening.
-     */
+    
     public function updateBobot(Request $request, $id)
     {
         $validated = $request->validate([
@@ -229,7 +217,7 @@ class FatteningController extends Controller
         $fattening->bobot_terakhir = $validated['bobot_terakhir'];
         $fattening->save();
         
-        // Check if target achieved
+        
         if ($fattening->target_bobot && $fattening->bobot_terakhir >= $fattening->target_bobot) {
             $fattening->status = 'selesai';
             $fattening->save();
@@ -242,9 +230,7 @@ class FatteningController extends Controller
         ]);
     }
     
-    /**
-     * Remove the specified fattening.
-     */
+    
     public function destroy($id)
     {
         $fattening = Fattening::find($id);
@@ -264,9 +250,7 @@ class FatteningController extends Controller
         ]);
     }
     
-    /**
-     * Get statistics for fattening dashboard.
-     */
+    
     public function statistics()
     {
         $stats = [
@@ -279,7 +263,7 @@ class FatteningController extends Controller
             'persentase_keberhasilan' => 0
         ];
         
-        // Calculate average growth for completed fattenings
+        
         $completedFattenings = Fattening::where('status', 'selesai')
             ->whereNotNull('bobot_awal')
             ->whereNotNull('bobot_terakhir')
@@ -291,7 +275,7 @@ class FatteningController extends Controller
             });
             $stats['rata_rata_pertumbuhan'] = round($totalGrowth / $completedFattenings->count(), 2);
             
-            // Calculate average duration
+            
             $totalDays = $completedFattenings->sum(function ($f) {
                 if ($f->tanggal_mulai && $f->tanggal_target_selesai) {
                     return \Carbon\Carbon::parse($f->tanggal_mulai)->diffInDays($f->tanggal_target_selesai);
@@ -300,7 +284,7 @@ class FatteningController extends Controller
             });
             $stats['rata_rata_lama_penggemukan'] = round($totalDays / $completedFattenings->count(), 1);
             
-            // Calculate success rate
+            
             $totalCompleted = Fattening::whereIn('status', ['selesai', 'gagal'])->count();
             if ($totalCompleted > 0) {
                 $stats['persentase_keberhasilan'] = round(($stats['selesai'] / $totalCompleted) * 100, 2);
@@ -313,16 +297,14 @@ class FatteningController extends Controller
         ]);
     }
     
-    /**
-     * Format fattening response with additional data.
-     */
+    
     private function formatFatteningResponse($fattening)
     {
         if (!$fattening) return null;
         
         $data = $fattening->toArray();
         
-        // Add progress percentage
+        
         if ($fattening->target_bobot && $fattening->target_bobot > 0) {
             $currentBobot = $fattening->bobot_terakhir ?? $fattening->bobot_awal ?? 0;
             $data['progress_persen'] = round(($currentBobot / $fattening->target_bobot) * 100, 1);
@@ -330,7 +312,7 @@ class FatteningController extends Controller
             $data['progress_persen'] = 0;
         }
         
-        // Add days remaining
+        
         if ($fattening->tanggal_target_selesai && $fattening->status === 'progres') {
             $daysRemaining = \Carbon\Carbon::now()->diffInDays($fattening->tanggal_target_selesai, false);
             $data['hari_tersisa'] = $daysRemaining > 0 ? $daysRemaining : 0;
@@ -338,7 +320,7 @@ class FatteningController extends Controller
             $data['hari_tersisa'] = null;
         }
         
-        // Add bobot gain
+        
         if ($fattening->bobot_awal && $fattening->bobot_terakhir) {
             $data['selisih_bobot'] = $fattening->bobot_terakhir - $fattening->bobot_awal;
         } else {

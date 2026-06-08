@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\PengaduanResource\Pages;
 use App\Models\Pengaduan;
 use Filament\Forms\Form;
@@ -29,6 +30,8 @@ use App\Mail\ResponPengaduanMail;
 
 class PengaduanResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Pengaduan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
@@ -208,7 +211,7 @@ class PengaduanResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

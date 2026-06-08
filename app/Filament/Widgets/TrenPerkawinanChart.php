@@ -10,7 +10,7 @@ class TrenPerkawinanChart extends ChartWidget
 {
     protected static ?string $heading = 'Tren Perkawinan & Kebuntingan';
     
-    // DIPERBESAR jadi 400px atau 500px
+    
     protected static ?string $maxHeight = '600px';
 
     protected function getData(): array

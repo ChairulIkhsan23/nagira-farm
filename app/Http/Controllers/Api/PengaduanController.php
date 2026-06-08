@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class PengaduanController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StorePengaduanRequest $request)
     {
         try {
@@ -25,8 +23,8 @@ class PengaduanController extends Controller
                 'pesan' => $request->pesan,
             ]);
             
-            // Optional: Send notification email here
-            // Mail::to('admin@example.com')->send(new PengaduanNotification($pengaduan));
+            
+            
             
             return response()->json([
                 'success' => true,

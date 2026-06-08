@@ -39,7 +39,7 @@ class Kelahiran extends Model
         'detail_anak' => 'array',
     ];
 
-    // ================= BOOT ================= //
+    
 
     protected static function booted()
     {
@@ -53,7 +53,7 @@ class Kelahiran extends Model
 
         static::created(function ($kelahiran) {
 
-            // UPDATE STATUS PERKAWINAN MENJADI MELAHIRKAN
+            
             if ($kelahiran->perkawinan) {
                 $kelahiran->perkawinan->update([
                     'status_siklus' => 'melahirkan'
@@ -75,7 +75,7 @@ class Kelahiran extends Model
 
                 Ternak::create([
                     'slug'          => Str::uuid(),
-                    'kode_ternak'   => null, // auto generate dari model Ternak
+                    'kode_ternak'   => null, 
                     'nama_ternak'   => $anak['nama_ternak'] ?? null,
                     'jenis_ternak'  => $kelahiran->betina?->jenis_ternak,
                     'kategori'      => $anak['kategori'] ?? 'regular',
@@ -90,7 +90,7 @@ class Kelahiran extends Model
         });
 
         static::updated(function ($kelahiran) {
-            // UPDATE STATUS PERKAWINAN KETIKA KELAHIRAN DIUPDATE
+            
             if ($kelahiran->perkawinan) {
                 $kelahiran->perkawinan->update([
                     'status_siklus' => 'melahirkan'
@@ -99,7 +99,7 @@ class Kelahiran extends Model
         });
 
         static::deleted(function ($kelahiran) {
-            // KEMBALIKAN STATUS PERKAWINAN KE BUNTING JIKA KELAHIRAN DIHAPUS
+            
             if ($kelahiran->perkawinan) {
                 $kelahiran->perkawinan->update([
                     'status_siklus' => 'bunting'
@@ -117,7 +117,7 @@ class Kelahiran extends Model
         });
     }
 
-    // ================= ACCESSORS ================= //
+    
 
     public function getMortalitasRateAttribute(): float
     {
@@ -179,7 +179,7 @@ class Kelahiran extends Model
         return $this->jenis_kelamin_summary['betina'];
     }
 
-    // ================= RELATIONSHIPS ================= //
+    
 
     public function betina()
     {
@@ -201,7 +201,7 @@ class Kelahiran extends Model
         return $this->belongsTo(Ternak::class, 'pejantan_id');
     }
 
-    // ================= SCOPES ================= //
+    
 
     public function scopeBetweenDates(Builder $query, $start, $end): Builder
     {

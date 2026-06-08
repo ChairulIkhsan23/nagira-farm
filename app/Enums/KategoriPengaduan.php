@@ -68,9 +68,7 @@ enum KategoriPengaduan: string implements HasLabel, HasColor, HasIcon
         };
     }
 
-    /**
-     * Mendapatkan semua nilai enum untuk opsi select
-     */
+    
     public static function options(): array
     {
         return collect(self::cases())
@@ -80,27 +78,21 @@ enum KategoriPengaduan: string implements HasLabel, HasColor, HasIcon
             ->toArray();
     }
 
-    /**
-     * Mendapatkan badge color untuk setiap kategori
-     */
+    
     public static function getColorByValue(string $value): string
     {
         $enum = self::tryFrom($value);
         return $enum ? $enum->getColor() : 'gray';
     }
 
-    /**
-     * Mendapatkan icon untuk setiap kategori
-     */
+    
     public static function getIconByValue(string $value): ?string
     {
         $enum = self::tryFrom($value);
         return $enum ? $enum->getIcon() : null;
     }
 
-    /**
-     * Mendapatkan semua nilai enum untuk validasi atau migrasi
-    */
+    
     public static function values(): array
     {
         return array_column(self::cases(), 'value');

@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class ArtikelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
     {
         $query = Artikel::query()
@@ -21,17 +19,17 @@ class ArtikelController extends Controller
             ->where('tanggal_publish', '<=', now())
             ->with('kategori');
         
-        // Filter by kategori
+        
         if ($request->has('kategori_id')) {
             $query->where('kategori_id', $request->kategori_id);
         }
         
-        // Search by judul
+        
         if ($request->has('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%');
         }
         
-        // Sorting
+        
         $sortBy = $request->get('sort_by', 'tanggal_publish');
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
@@ -54,9 +52,7 @@ class ArtikelController extends Controller
         ], Response::HTTP_OK);
     }
     
-    /**
-     * Get latest articles for landing page.
-     */
+    
     public function latest(Request $request)
     {
         $limit = $request->get('limit', 5);
@@ -75,9 +71,7 @@ class ArtikelController extends Controller
         ], Response::HTTP_OK);
     }
     
-    /**
-     * Get featured articles for landing page.
-     */
+    
     public function featured(Request $request)
     {
         $limit = $request->get('limit', 3);
@@ -97,9 +91,7 @@ class ArtikelController extends Controller
         ], Response::HTTP_OK);
     }
     
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $slug)
     {
         $artikel = Artikel::where('slug', $slug)
@@ -115,10 +107,10 @@ class ArtikelController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
         
-        // Increment views
+        
         $artikel->increment('views');
         
-        // Get related articles
+        
         $relatedArticles = Artikel::where('kategori_id', $artikel->kategori_id)
             ->where('id', '!=', $artikel->id)
             ->where('status', 'published')
@@ -135,9 +127,7 @@ class ArtikelController extends Controller
         ], Response::HTTP_OK);
     }
     
-    /**
-     * Get articles by kategori.
-     */
+    
     public function byKategori(string $kategoriSlug, Request $request)
     {
         $perPage = $request->get('per_page', 10);

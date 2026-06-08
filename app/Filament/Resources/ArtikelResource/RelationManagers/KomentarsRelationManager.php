@@ -58,10 +58,10 @@ class KomentarsRelationManager extends RelationManager
                     ->sortable(),
             ])
             ->filters([
-                //
+                
             ])      
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

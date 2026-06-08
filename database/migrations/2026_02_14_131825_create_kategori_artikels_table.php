@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('kategori_artikels', function (Blueprint $table) {
@@ -18,18 +16,16 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
             
-            # SEO fields
+            
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
 
-            // Indexes
+            
             $table->index('nama_kategori');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('kategori_artikels');

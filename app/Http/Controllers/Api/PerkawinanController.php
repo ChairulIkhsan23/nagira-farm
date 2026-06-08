@@ -11,29 +11,27 @@ use Carbon\Carbon;
 
 class PerkawinanController extends Controller
 {
-    /**
-     * Display a listing of perkawinans.
-     */
+    
     public function index(Request $request)
     {
         $query = Perkawinan::with(['betina', 'pejantan']);
         
-        // Filter by status siklus
+        
         if ($request->has('status_siklus')) {
             $query->where('status_siklus', $request->status_siklus);
         }
         
-        // Filter by jenis kawin
+        
         if ($request->has('jenis_kawin')) {
             $query->where('jenis_kawin', $request->jenis_kawin);
         }
         
-        // Filter by betina
+        
         if ($request->has('betina_id')) {
             $query->where('betina_id', $request->betina_id);
         }
         
-        // Filter by date range
+        
         if ($request->has('tanggal_kawin_from')) {
             $query->where('tanggal_kawin', '>=', $request->tanggal_kawin_from);
         }
@@ -44,7 +42,7 @@ class PerkawinanController extends Controller
         
         $perkawinans = $query->orderBy('tanggal_kawin', 'desc')->paginate(15);
         
-        // Add additional data
+        
         $perkawinans->getCollection()->transform(function ($perkawinan) {
             return $this->formatPerkawinanResponse($perkawinan);
         });
@@ -55,9 +53,7 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Store a newly created perkawinan.
-     */
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -73,17 +69,17 @@ class PerkawinanController extends Controller
         try {
             DB::beginTransaction();
             
-            // Set default status_siklus if not provided
+            
             if (!isset($validated['status_siklus'])) {
                 $validated['status_siklus'] = 'kawin';
             }
             
-            // Calculate perkiraan_lahir if not provided (gestation period ~9 months for cows)
+            
             if (empty($validated['perkiraan_lahir']) && !empty($validated['tanggal_kawin'])) {
                 $validated['perkiraan_lahir'] = Carbon::parse($validated['tanggal_kawin'])->addMonths(9)->format('Y-m-d');
             }
             
-            // Update betina kategori to breeding
+            
             $betina = Ternak::find($validated['betina_id']);
             if ($betina && $betina->kategori !== 'breeding') {
                 $betina->kategori = 'breeding';
@@ -109,9 +105,7 @@ class PerkawinanController extends Controller
         }
     }
     
-    /**
-     * Display the specified perkawinan.
-     */
+    
     public function show($id)
     {
         $perkawinan = Perkawinan::with(['betina', 'pejantan'])->find($id);
@@ -129,9 +123,7 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Get perkawinan by betina slug.
-     */
+    
     public function getByBetinaSlug($slug)
     {
         $betina = Ternak::where('slug', $slug)->where('jenis_kelamin', 'betina')->first();
@@ -158,9 +150,7 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Get active pregnancies.
-     */
+    
     public function getActivePregnancies()
     {
         $pregnancies = Perkawinan::where('status_siklus', 'bunting')
@@ -171,7 +161,7 @@ class PerkawinanController extends Controller
         $pregnancies->transform(function ($pregnancy) {
             $formatted = $this->formatPerkawinanResponse($pregnancy);
             
-            // Add days until birth
+            
             if ($pregnancy->perkiraan_lahir) {
                 $formatted['hari_menuju_lahir'] = Carbon::now()->diffInDays(Carbon::parse($pregnancy->perkiraan_lahir), false);
                 $formatted['minggu_kebuntingan'] = $pregnancy->tanggal_kawin 
@@ -188,9 +178,7 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Update the specified perkawinan.
-     */
+    
     public function update(Request $request, $id)
     {
         $perkawinan = Perkawinan::find($id);
@@ -214,7 +202,7 @@ class PerkawinanController extends Controller
         try {
             DB::beginTransaction();
             
-            // If status changes to 'melahirkan', update perkiraan_lahir to today if not set
+            
             if (isset($validated['status_siklus']) && $validated['status_siklus'] === 'melahirkan') {
                 if (empty($validated['perkiraan_lahir'])) {
                     $validated['perkiraan_lahir'] = Carbon::now()->format('Y-m-d');
@@ -240,9 +228,7 @@ class PerkawinanController extends Controller
         }
     }
     
-    /**
-     * Update pregnancy status.
-     */
+    
     public function updatePregnancyStatus(Request $request, $id)
     {
         $validated = $request->validate([
@@ -270,7 +256,7 @@ class PerkawinanController extends Controller
             $perkawinan->keterangan = $validated['keterangan'];
         }
         
-        // If status is 'melahirkan' and no perkiraan_lahir, set to today
+        
         if ($validated['status_siklus'] === 'melahirkan' && !$perkawinan->perkiraan_lahir) {
             $perkawinan->perkiraan_lahir = Carbon::now()->format('Y-m-d');
         }
@@ -284,9 +270,7 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Remove the specified perkawinan.
-     */
+    
     public function destroy($id)
     {
         $perkawinan = Perkawinan::find($id);
@@ -306,9 +290,7 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Get statistics for breeding dashboard.
-     */
+    
     public function statistics()
     {
         $stats = [
@@ -332,7 +314,7 @@ class PerkawinanController extends Controller
                 ->count()
         ];
         
-        // Calculate success rate (melahirkan / total pregnancies)
+        
         $totalPregnancies = Perkawinan::whereIn('status_siklus', ['bunting', 'melahirkan', 'gagal'])->count();
         $totalBirths = Perkawinan::where('status_siklus', 'melahirkan')->count();
         
@@ -340,7 +322,7 @@ class PerkawinanController extends Controller
             $stats['success_rate'] = round(($totalBirths / $totalPregnancies) * 100, 2);
         }
         
-        // Calculate average gestation days for completed pregnancies
+        
         $completedPregnancies = Perkawinan::where('status_siklus', 'melahirkan')
             ->whereNotNull('tanggal_kawin')
             ->whereNotNull('perkiraan_lahir')
@@ -359,16 +341,14 @@ class PerkawinanController extends Controller
         ]);
     }
     
-    /**
-     * Format perkawinan response with additional data.
-     */
+    
     private function formatPerkawinanResponse($perkawinan)
     {
         if (!$perkawinan) return null;
         
         $data = $perkawinan->toArray();
         
-        // Add status label
+        
         $statusLabels = [
             'kosong' => 'Kosong',
             'kawin' => 'Kawin',
@@ -378,14 +358,14 @@ class PerkawinanController extends Controller
         ];
         $data['status_siklus_label'] = $statusLabels[$perkawinan->status_siklus] ?? $perkawinan->status_siklus;
         
-        // Add jenis kawin label
+        
         $jenisKawinLabels = [
             'alami' => 'Alami',
             'IB' => 'Inseminasi Buatan'
         ];
         $data['jenis_kawin_label'] = $jenisKawinLabels[$perkawinan->jenis_kawin] ?? $perkawinan->jenis_kawin;
         
-        // Add gestation progress if bunting
+        
         if ($perkawinan->status_siklus === 'bunting' && $perkawinan->tanggal_kawin && $perkawinan->perkiraan_lahir) {
             $start = Carbon::parse($perkawinan->tanggal_kawin);
             $end = Carbon::parse($perkawinan->perkiraan_lahir);

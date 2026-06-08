@@ -31,15 +31,15 @@ class ListKelahirans extends ListRecords
         ];
     }
 
-    // Tambahkan method ini untuk mengatur jumlah kolom widget
+    
     public function getHeaderWidgetsColumns(): int | array
     {
         return [
-            'default' => 1, // Default 1 kolom
-            'sm' => 1,      // Small screen 1 kolom
-            'md' => 2,      // Medium screen 2 kolom (stats 1 baris, chart 2 kolom)
-            'lg' => 2,      // Large screen 2 kolom
-            'xl' => 2,      // Extra large screen 2 kolom
+            'default' => 1, 
+            'sm' => 1,      
+            'md' => 2,      
+            'lg' => 2,      
+            'xl' => 2,      
         ];
     }
 }

@@ -22,10 +22,10 @@ class TernakSeeder extends Seeder
             $this->generateForJenis($jenis);
         }
 
-        // tambahan random
+        
         $this->generateRandom(20);
 
-        $this->command->info('Selesai ✅');
+        $this->command->info('Selesai ');
     }
 
     private function generateForJenis(JenisTernak $jenis): void
@@ -47,10 +47,10 @@ class TernakSeeder extends Seeder
 
     private function createTernak(JenisTernak $jenis, ?int $index = null): void
     {
-        // ✅ kode unik
+        
         $kode = $this->generateKode();
 
-        // ✅ slug wajib
+        
         $slug = Str::slug($kode);
 
         $jenisKelamin = rand(0, 1) ? 'jantan' : 'betina';

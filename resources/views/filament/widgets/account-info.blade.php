@@ -1,7 +1,7 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="space-y-5">
-            <!-- Header dengan Icon -->
+            
             <div class="flex items-center gap-3 border-b pb-4">
                 <div class="p-3 bg-primary-100 rounded-xl">
                     <x-heroicon-o-home class="w-8 h-8 text-primary-600" />
@@ -16,9 +16,9 @@
                 </div>
             </div>
             
-            <!-- User Info Cards -->
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Name Card -->
+                
                 <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 flex items-center gap-3">
                     <div class="p-2 bg-blue-500 rounded-lg">
                         <x-heroicon-o-user class="w-5 h-5 text-white" />
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 
-                <!-- Email Card -->
+                
                 <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 flex items-center gap-3">
                     <div class="p-2 bg-purple-500 rounded-lg">
                         <x-heroicon-o-envelope class="w-5 h-5 text-white" />
@@ -40,19 +40,19 @@
                     </div>
                 </div>
                 
-                <!-- Role Card -->
+                
                 <div class="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-xl p-4 flex items-center gap-3">
                     <div class="p-2 bg-amber-500 rounded-lg">
                         <x-heroicon-o-shield-check class="w-5 h-5 text-white" />
                     </div>
                     <div>
                         <p class="text-xs text-amber-600 dark:text-amber-400 font-medium">Role / Jabatan</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ auth()->user()->role ?? 'Administrator' }}</p>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ auth()->user()->roles->pluck('name')->join(', ') ?: 'Administrator' }}</p>
                     </div>
                 </div>
             </div>
             
-            <!-- Welcome Message -->
+            
             <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                 <div class="flex items-start gap-3">
                     <div class="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            
             <div class="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-700">
                 <div class="flex gap-2">
                     <x-filament::button 

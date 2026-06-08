@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\PakanTernakResource\Pages;
 use App\Models\PakanTernak;
 use App\Models\Pakan;
@@ -10,7 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-// Form
+
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -18,7 +19,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 
-// Table
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
@@ -30,6 +31,8 @@ use Filament\Tables\Filters\Filter;
 
 class PakanTernakResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = PakanTernak::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
@@ -49,9 +52,9 @@ class PakanTernakResource extends Resource
 
                     Grid::make(2)->schema([
 
-                        // =====================
-                        // SELECT TERNAK
-                        // =====================
+                        
+                        
+                        
                         Select::make('ternak_id')
                             ->label('Ternak')
                             ->relationship('ternak', 'kode_ternak')
@@ -68,9 +71,9 @@ class PakanTernakResource extends Resource
                             ->required()
                             ->columnSpan(1),
 
-                        // =====================
-                        // SELECT PAKAN
-                        // =====================
+                        
+                        
+                        
                         Select::make('pakan_id')
                             ->label('Pakan')
                             ->relationship('pakan', 'kode_pakan')
@@ -95,9 +98,9 @@ class PakanTernakResource extends Resource
 
                     ]),
 
-                    // =====================
-                    // PREVIEW TERNAK
-                    // =====================
+                    
+                    
+                    
                     Section::make('Detail Ternak')
                         ->schema([
                             Placeholder::make('ternak_kode_preview')
@@ -111,9 +114,9 @@ class PakanTernakResource extends Resource
                         ->columns(2)
                         ->collapsible(),
 
-                    // =====================
-                    // PREVIEW PAKAN
-                    // =====================
+                    
+                    
+                    
                     Section::make('Detail Pakan')
                         ->schema([
                             Placeholder::make('pakan_nama_preview')
@@ -129,17 +132,17 @@ class PakanTernakResource extends Resource
                         ->columns(2)
                         ->collapsible(),
 
-                    // =====================
-                    // JUMLAH
-                    // =====================
+                    
+                    
+                    
                     TextInput::make('jumlah')
                         ->numeric()
                         ->required()
                         ->minValue(0.1)
                         ->suffix(fn ($get) => $get('pakan_satuan_preview') ?? ''),
-                    // =====================
-                    // TANGGAL
-                    // =====================
+                    
+                    
+                    
                     DatePicker::make('tanggal')
                         ->required()
                         ->default(now())

@@ -29,12 +29,12 @@ class Pakan extends Model
 
         static::creating(function ($pakan) {
 
-            // Generate kode otomatis
+            
             if (empty($pakan->kode_pakan)) {
                 $pakan->kode_pakan = static::generateKodePakan($pakan->jenis_pakan);
             }
 
-            // Generate slug
+            
             if (empty($pakan->slug)) {
                 $pakan->slug = static::generateSlug($pakan->kode_pakan, $pakan->nama_pakan);
             }
@@ -47,9 +47,7 @@ class Pakan extends Model
         });
     }
 
-    /**
-     * Generate kode pakan otomatis
-     */
+    
     public static function generateKodePakan($jenisPakan = null): string
     {
         $prefix = 'PKN';
@@ -73,9 +71,7 @@ class Pakan extends Model
         return $prefix . $newNumber;
     }
 
-    /**
-     * Generate slug
-     */
+    
     public static function generateSlug($kode, $nama = null): string
     {
         $slug = $kode;
@@ -85,33 +81,25 @@ class Pakan extends Model
         return str()->slug($slug);
     }
 
-    /**
-     * Route key pakai slug
-     */
+    
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
-    /**
-     * Relasi ke pakan_ternak
-     */
+    
     public function pakanTernaks()
     {
         return $this->hasMany(PakanTernak::class);
     }
 
-    /**
-     * Scope stok habis
-     */
+    
     public function scopeStokHabis(Builder $query): Builder
     {
         return $query->where('stok', '<=', 0);
     }
 
-    /**
-     * Scope stok menipis
-     */
+    
     public function scopeStokMenipis(Builder $query): Builder
     {
         return $query->whereBetween('stok', [0.1, 10]);

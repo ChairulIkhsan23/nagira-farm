@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('perkawinans', function (Blueprint $table) {
@@ -22,7 +20,7 @@ return new class extends Migration
             $table->string('keterangan')->nullable();
             $table->timestamps();
             
-            // Indexes
+            
             $table->index(['betina_id', 'tanggal_kawin']);
             $table->index(['status_siklus', 'tanggal_kawin']);
             $table->index('tanggal_kawin');
@@ -31,9 +29,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('perkawinans');

@@ -27,9 +27,9 @@ class FatteningProgressChart extends ChartWidget
                         $gagal
                     ],
                     'backgroundColor' => [
-                        '#3b82f6', // biru - progress
-                        '#22c55e', // hijau - selesai
-                        '#ef4444', // merah - gagal
+                        '#3b82f6', 
+                        '#22c55e', 
+                        '#ef4444', 
                     ],
                     'borderColor' => [
                         '#ffffff',

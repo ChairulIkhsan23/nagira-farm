@@ -2,36 +2,39 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\KategoriArtikelResource\Pages;
 use App\Models\KategoriArtikel;
 
-// Filament Core
+
 use Filament\Resources\Resource;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 
-// Forms
+
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Placeholder;
 
-// Tables
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 
-// Tables Actions
+
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 
-// Laravel
+
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class KategoriArtikelResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = KategoriArtikel::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
@@ -46,7 +49,7 @@ class KategoriArtikelResource extends Resource
     
     protected static ?string $pluralModelLabel = 'Kategori Artikel';
 
-    // ===================== FORM =====================
+    
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -124,7 +127,7 @@ class KategoriArtikelResource extends Resource
         return parent::getEloquentQuery()
             ->withCount('artikels')
             ->withoutGlobalScopes([
-                //
+                
             ]);
     }
 

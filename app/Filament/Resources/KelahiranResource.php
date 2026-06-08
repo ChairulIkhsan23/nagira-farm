@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\KelahiranResource\Pages;
 use App\Models\Kelahiran;
 use App\Models\Perkawinan;
@@ -12,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
-// Form Components
+
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Placeholder;
@@ -21,7 +22,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Repeater;
 
-// Table Components
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -40,6 +41,8 @@ use Filament\Infolists\Components\Section as InfoSection;
 
 class KelahiranResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Kelahiran::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-plus';
     protected static ?string $navigationGroup = 'Program Perkawinan';
@@ -47,7 +50,7 @@ class KelahiranResource extends Resource
     protected static ?string $modelLabel = 'Kelahiran';
     protected static ?string $pluralModelLabel = 'Data Kelahiran';
 
-    // ================= FORM ================= //
+    
 
     public static function form(Form $form): Form
     {
@@ -57,7 +60,7 @@ class KelahiranResource extends Resource
                 ->icon('heroicon-o-user-plus')
                 ->schema([
 
-                    // ================= BETINA ================= //
+                    
                     Select::make('betina_id')
                         ->label('Induk Betina')
                         ->relationship(
@@ -67,12 +70,12 @@ class KelahiranResource extends Resource
                                 $query
                                     ->where('jenis_kelamin', 'Betina')
 
-                                    // Harus punya perkawinan aktif
+                                    
                                     ->whereHas('perkawinanSebagaiBetina', function ($q) {
                                         $q->whereIn('status_siklus', ['kawin', 'bunting']);
                                     })
 
-                                    // BELUM PERNAH MELAHIRKAN
+                                    
                                     ->whereDoesntHave('kelahirans');
                             }
                         )
@@ -95,14 +98,14 @@ class KelahiranResource extends Resource
                             $set('betina_nama', $betina->nama_ternak);
                             $set('betina_umur', $umur);
 
-                            // reset
+                            
                             $set('perkawinan_id', null);
                             $set('pejantan_kode', null);
                             $set('pejantan_nama', null);
                             $set('pejantan_umur', null);
                         }),
 
-                    // INFO BETINA
+                    
                     FormSection::make('Detail Betina')
                         ->schema([
                             Grid::make(3)->schema([
@@ -113,8 +116,8 @@ class KelahiranResource extends Resource
                         ])
                         ->collapsible(),
 
-                    // ================= PERKAWINAN ================= //
-                    // Di KelahiranResource.php pada bagian Select 'perkawinan_id'
+                    
+                    
                         Select::make('perkawinan_id')
                             ->label('Data Perkawinan')
                             ->reactive()
@@ -125,7 +128,7 @@ class KelahiranResource extends Resource
                                 ? Perkawinan::with('pejantan')
                                     ->where('betina_id', $get('betina_id'))
                                     ->whereIn('status_siklus', ['kawin','bunting'])
-                                    ->whereDoesntHave('kelahiran') // Hanya tampilkan yang belum punya kelahiran
+                                    ->whereDoesntHave('kelahiran') 
                                     ->orderBy('tanggal_kawin', 'desc')
                                     ->get()
                                     ->mapWithKeys(fn ($p) => [
@@ -154,7 +157,7 @@ class KelahiranResource extends Resource
                             }
                         }),
 
-                    // INFO PEJANTAN
+                    
                     FormSection::make('Detail Pejantan')
                         ->schema([
                             Grid::make(3)->schema([
@@ -171,7 +174,7 @@ class KelahiranResource extends Resource
 
                     Textarea::make('keterangan')->columnSpanFull(),
 
-                    // ================= JUMLAH ANAK ================= //
+                    
                     Grid::make(3)->schema([
                         TextInput::make('jumlah_anak_hidup')
                             ->numeric()
@@ -190,7 +193,7 @@ class KelahiranResource extends Resource
                             ->dehydrated(),
                     ]),
 
-                    // DETAIL ANAK
+                    
                     Repeater::make('detail_anak')
                     ->schema([
 
@@ -232,7 +235,7 @@ class KelahiranResource extends Resource
                     ->reorderable(false)
                     ->dehydrated(),
                 ]),
-            // hidden state
+            
             TextInput::make('betina_kode')->hidden(),
             TextInput::make('betina_nama')->hidden(),
             TextInput::make('betina_umur')->hidden(),
@@ -242,7 +245,7 @@ class KelahiranResource extends Resource
         ]);
     }
 
-    // ================= SYNC DETAIL ANAK ================= //
+    
     protected static function syncAnak(callable $get, callable $set)
     {
         $hidup = (int) ($get('jumlah_anak_hidup') ?? 0);
@@ -265,7 +268,7 @@ class KelahiranResource extends Resource
         $set('detail_anak', $current);
     }
 
-    // ================= TABLE ================= //
+    
     public static function table(Table $table): Table
 {
     return $table
@@ -327,16 +330,16 @@ class KelahiranResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
         ])
 
-        // ================= FILTERS =================
+        
         ->filters([
 
-            // FILTER BETINA
+            
             SelectFilter::make('betina_id')
                 ->relationship('betina', 'kode_ternak')
                 ->label('Induk Betina')
                 ->searchable(),
 
-            // FILTER STATUS SAPIH
+            
             SelectFilter::make('status_sapih')
                 ->label('Status Sapih')
                 ->options([
@@ -351,7 +354,7 @@ class KelahiranResource extends Resource
                     };
                 }),
 
-            // FILTER RANGE TANGGAL MELAHIRKAN
+            
             Filter::make('tanggal_melahirkan')
                 ->form([
                     DatePicker::make('dari'),
@@ -372,7 +375,7 @@ class KelahiranResource extends Resource
                 }),
         ])
 
-        // ================= ACTIONS =================
+        
         ->actions([
             ActionGroup::make([
                 Action::make('detail_anak')

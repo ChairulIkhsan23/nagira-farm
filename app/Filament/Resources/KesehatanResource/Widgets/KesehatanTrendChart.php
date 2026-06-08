@@ -10,7 +10,7 @@ class KesehatanTrendChart extends ChartWidget
 {
     protected static ?string $heading = 'Trend Pemeriksaan 6 Bulan Terakhir';
     
-    // Tambahkan chartId untuk unique
+    
     protected static string $chartId = 'kesehatan-trend-chart';
 
     protected function getType(): string
@@ -41,7 +41,7 @@ class KesehatanTrendChart extends ChartWidget
                     'data' => $data,
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#2196F3',
-                    'tension' => 0.4, // Biar garisnya fleksibel
+                    'tension' => 0.4, 
                 ],
             ],
             'labels' => $labels,

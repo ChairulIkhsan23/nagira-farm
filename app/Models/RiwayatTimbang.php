@@ -29,14 +29,14 @@ class RiwayatTimbang extends Model
     protected static function booted(): void
     {
         static::created(function (RiwayatTimbang $timbang) {
-            // UPDATE FATTENING
+            
             if ($timbang->fattening_id) {
                 $fattening = $timbang->fattening;            
                 $fattening->bobot_terakhir = $timbang->bobot;
                 $fattening->save();                          
             }
             
-            // TAMBAHKAN INI - UPDATE BOBOT TERNAK
+            
             if ($timbang->ternak_id) {
                 $ternak = $timbang->ternak;
                 $ternak->bobot = $timbang->bobot;
@@ -47,14 +47,14 @@ class RiwayatTimbang extends Model
 
         static::updated(function (RiwayatTimbang $timbang) {
             if ($timbang->isDirty('bobot')) {
-                // UPDATE FATTENING
+                
                 if ($timbang->fattening_id) {
                     $fattening = $timbang->fattening;             
                     $fattening->bobot_terakhir = $timbang->bobot;
                     $fattening->save();                           
                 }
                 
-                // TAMBAHKAN INI - UPDATE BOBOT TERNAK
+                
                 if ($timbang->ternak_id) {
                     $ternak = $timbang->ternak;
                     $ternak->bobot = $timbang->bobot;
@@ -65,7 +65,7 @@ class RiwayatTimbang extends Model
         });
 
         static::deleted(function (RiwayatTimbang $timbang) {
-            // UPDATE FATTENING
+            
             if ($timbang->fattening_id) {
                 $fattening = $timbang->fattening;             
                 
@@ -83,7 +83,7 @@ class RiwayatTimbang extends Model
                 $fattening->save();                            
             }
             
-            // TAMBAHKAN INI - UPDATE BOBOT TERNAK
+            
             if ($timbang->ternak_id) {
                 $ternak = $timbang->ternak;
                 $riwayatTerakhirTernak = $ternak->riwayatTimbangs()
@@ -101,7 +101,7 @@ class RiwayatTimbang extends Model
         });
     }
 
-    // ===================== ACCESSORS =====================
+    
 
     public function getBobotFormattedAttribute(): string
     {
@@ -198,7 +198,7 @@ class RiwayatTimbang extends Model
         };
     }
 
-    // ===================== RELATIONSHIPS =====================
+    
 
     public function ternak(): BelongsTo
     {
@@ -210,7 +210,7 @@ class RiwayatTimbang extends Model
         return $this->belongsTo(Fattening::class, 'fattening_id');
     }
 
-    // ===================== SCOPES =====================
+    
 
     public function scopeLatest(Builder $query): Builder
     {
@@ -256,7 +256,7 @@ class RiwayatTimbang extends Model
             ->whereYear('tanggal_timbang', now()->year);
     }
 
-    // ===================== UTILITY METHODS =====================
+    
 
     public function getPreviousWeighing(): ?RiwayatTimbang
     {

@@ -17,20 +17,20 @@ class PakanTernakStats extends BaseWidget
     {
         $totalPemberian = PakanTernak::count();
         
-        // Ambil semua pakan dengan berbagai satuan
+        
         $semuaPakan = PakanTernak::with('pakan')->get();
         
-        // Kelompokkan berdasarkan satuan
+        
         $totalPerSatuan = [];
         foreach ($semuaPakan as $item) {
             $satuan = $item->pakan?->satuan ?? 'unit';
             $totalPerSatuan[$satuan] = ($totalPerSatuan[$satuan] ?? 0) + $item->jumlah;
         }
         
-        // Format total kuantitas jadi ringkas
+        
         $deskripsiTotal = [];
         foreach ($totalPerSatuan as $satuan => $total) {
-            // Format angka supaya lebih pendek
+            
             if ($total >= 1000) {
                 $total = round($total / 1000, 1) . 'k';
             } else {
@@ -39,7 +39,7 @@ class PakanTernakStats extends BaseWidget
             $deskripsiTotal[] = $total . ' ' . $satuan;
         }
         
-        // Gabungkan dengan batas maksimal 2 satuan
+        
         if (count($deskripsiTotal) > 2) {
             $deskripsiTotal = array_slice($deskripsiTotal, 0, 2);
             $deskripsiTotal[] = '+' . (count($totalPerSatuan) - 2) . ' lainnya';

@@ -43,7 +43,7 @@ class EditFattening extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    // additional methods if needed
+    
     protected function afterSave(): void
     {
         $fattening = $this->record;
@@ -51,13 +51,13 @@ class EditFattening extends EditRecord
         
         if (!$ternak) return;
 
-        // Update bobot ternak
+        
         $ternak->bobot = $fattening->bobot_terakhir;
         $ternak->tanggal_timbang_terakhir = now();
         
-        //Cek Status
+        
         if ($fattening->status === 'selesai' || $fattening->status === 'gagal') {
-            // Cek apakah masih ada program aktif lain
+            
             $hasActiveFattening = Fattening::where('ternak_id', $ternak->id)
                 ->where('status', 'progres')
                 ->where('id', '!=', $fattening->id)

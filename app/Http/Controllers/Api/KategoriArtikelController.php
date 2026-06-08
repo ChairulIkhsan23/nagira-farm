@@ -10,9 +10,7 @@ use Illuminate\Http\Response;
 
 class KategoriArtikelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index(Request $request)
     {
         $kategoris = KategoriArtikel::withCount('artikels')
@@ -26,9 +24,7 @@ class KategoriArtikelController extends Controller
         ], Response::HTTP_OK);
     }
     
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $slug)
     {
         $kategori = KategoriArtikel::where('slug', $slug)

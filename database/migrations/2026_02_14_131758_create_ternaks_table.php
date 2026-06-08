@@ -7,9 +7,7 @@ use App\Enums\JenisTernak;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('ternaks', function (Blueprint $table) {
@@ -26,7 +24,7 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->enum('status_aktif', ['aktif', 'mati', 'terjual'])->default('aktif');
 
-            // ================= RELASI PARENT =================
+            
             $table->foreignId('induk_id')
                 ->nullable()
                 ->constrained('ternaks')
@@ -42,7 +40,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
             
-            // Indexes
+            
             $table->index(['kategori', 'status_aktif']);
             $table->index('jenis_ternak');
             $table->index('kategori');
@@ -54,9 +52,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('ternaks');

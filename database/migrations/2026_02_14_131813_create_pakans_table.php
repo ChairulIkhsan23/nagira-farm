@@ -9,9 +9,7 @@ use App\Enums\NamaPakan;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('pakans', function (Blueprint $table) {
@@ -33,9 +31,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('pakans');

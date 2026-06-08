@@ -9,17 +9,17 @@ class KelahiranStatusChart extends ChartWidget
 {
     protected static ?string $heading = 'Status Kelahiran';
     
-    // Tambahkan ini untuk memastikan widget unique
+    
     protected static string $chartId = 'kelahiran-status-chart';
 
     protected function getData(): array
     {
-        // Hitung total kelahiran dengan anak hidup vs mati
+        
         $totalLahir = Kelahiran::sum('jumlah_anak_lahir') ?: 1;
         $totalHidup = Kelahiran::sum('jumlah_anak_hidup');
         $totalMati = Kelahiran::sum('jumlah_anak_mati');
         
-        // Hitung jumlah kelahiran (event) berdasarkan status
+        
         $menyusui = Kelahiran::whereDate('tanggal_sapih', '>', now())->count();
         $sudahSapih = Kelahiran::whereDate('tanggal_sapih', '<=', now())->count();
 

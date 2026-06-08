@@ -7,14 +7,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TernakResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+    
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'slug' => $this->slug,
             'kode_ternak' => $this->kode_ternak,
@@ -29,5 +25,11 @@ class TernakResource extends JsonResource
             'status_aktif' => $this->status_aktif,
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];
+
+        if ($request->boolean('include_price_range') || (bool) ($this->include_price_range ?? false)) {
+            $data['price_range'] = $this->estimated_price_range;
+        }
+
+        return $data;
     }
 }

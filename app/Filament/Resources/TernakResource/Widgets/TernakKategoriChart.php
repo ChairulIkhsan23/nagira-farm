@@ -27,9 +27,9 @@ class TernakKategoriChart extends ChartWidget
                         $fattening,
                     ],
                     'backgroundColor' => [
-                        '#3b82f6', // biru - regular
-                        '#22c55e', // hijau - breeding
-                        '#f59e0b', // kuning - fattening
+                        '#3b82f6', 
+                        '#22c55e', 
+                        '#f59e0b', 
                     ],
                 ],
             ],

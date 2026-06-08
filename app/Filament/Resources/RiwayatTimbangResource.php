@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\RiwayatTimbangResource\Pages;
 use App\Models\RiwayatTimbang;
 use App\Models\Fattening;
@@ -27,6 +28,8 @@ use Filament\Tables\Actions\DeleteBulkAction;
 
 class RiwayatTimbangResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = RiwayatTimbang::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
@@ -48,12 +51,12 @@ class RiwayatTimbangResource extends Resource
                         modifyQueryUsing: function (Builder $query, $record) {
                             return $query->where('status_aktif', true)
                                 ->where(function ($q) use ($record) {
-                                    // Ternak yang punya program progres
+                                    
                                     $q->whereHas('fattening', function ($subQ) {
                                         $subQ->where('status', 'progres');
                                     });
                                     
-                                    // Include ternak yang lagi diedit
+                                    
                                     if ($record && $record->ternak_id) {
                                         $q->orWhere('id', $record->ternak_id);
                                     }
@@ -76,15 +79,15 @@ class RiwayatTimbangResource extends Resource
                         modifyQueryUsing: function (Builder $query, callable $get, $record) {
                             $ternakId = $get('ternak_id');
                             
-                            // Base query
+                            
                             $query->where('status', 'progres');
                             
-                            // Filter by ternak
+                            
                             if ($ternakId) {
                                 $query->where('ternak_id', $ternakId);
                             }
                             
-                            // Include program yang lagi diedit
+                            
                             if ($record && $record->fattening_id) {
                                 $query->orWhere('id', $record->fattening_id);
                             }
@@ -241,7 +244,7 @@ class RiwayatTimbangResource extends Resource
                     ->label('Pertumbuhan Positif')
                     ->toggle()
                     ->query(fn (Builder $query): Builder => $query->whereHas('fattening', function ($q) {
-                        // Ini akan difilter di model scope
+                        
                     })),
             ])
             ->actions([
@@ -275,7 +278,7 @@ class RiwayatTimbangResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

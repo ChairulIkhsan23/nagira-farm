@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('kesehatans', function (Blueprint $table) {
@@ -22,16 +20,14 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
             
-            // Indexes
+            
             $table->index(['ternak_id', 'tanggal_periksa']);
             $table->index('kondisi');
             $table->index('tanggal_periksa');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('kesehatans');

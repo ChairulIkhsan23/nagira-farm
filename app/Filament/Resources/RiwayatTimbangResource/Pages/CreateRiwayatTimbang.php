@@ -32,7 +32,7 @@ class CreateRiwayatTimbang extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        // redirect ke halaman daftar pengguna setelah pembuatan
+        
         return $this->getResource()::getUrl('index');
     }
 }

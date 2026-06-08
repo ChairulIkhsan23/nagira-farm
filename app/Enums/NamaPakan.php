@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum NamaPakan: string
 {
-    // ===============================
-    // 🌿 HIJAUAN
-    // ===============================
+    
+    
+    
     case RUMPUT_ODOT = 'Rumput Odot';
     case RUMPUT_GAJAH = 'Rumput Gajah';
     case RUMPUT_RAJA = 'Rumput Raja';
@@ -22,9 +22,9 @@ enum NamaPakan: string
     case JERAMI_PADI = 'Jerami Padi';
     case JERAMI_KACANG = 'Jerami Kacang Tanah';
 
-    // ===============================
-    // 🌾 KONSENTRAT
-    // ===============================
+    
+    
+    
     case DEDAK_HALUS = 'Dedak Halus';
     case DEDAK_KASAR = 'Dedak Kasar';
     case JAGUNG_GILING = 'Jagung Giling';
@@ -37,17 +37,17 @@ enum NamaPakan: string
     case TEPUNG_IKAN = 'Tepung Ikan';
     case TEPUNG_SINGKONG = 'Tepung Singkong';
 
-    // ===============================
-    // 🌽 SILASE
-    // ===============================
+    
+    
+    
     case SILASE_JAGUNG = 'Silase Jagung';
     case SILASE_RUMPUT_GAJAH = 'Silase Rumput Gajah';
     case SILASE_SORGUM = 'Silase Sorgum';
     case SILASE_DAUN_JAGUNG = 'Silase Daun Jagung';
 
-    // ===============================
-    // 🏭 LIMBAH & BUNGKIL
-    // ===============================
+    
+    
+    
     case AMPAS_TAHU = 'Ampas Tahu';
     case AMPAS_KELAPA = 'Ampas Kelapa';
     case AMPAS_BIR = 'Ampas Bir';
@@ -57,9 +57,9 @@ enum NamaPakan: string
     case KULIT_KOPI = 'Kulit Kopi';
     case KULIT_ARI_KEDELAI = 'Kulit Ari Kedelai';
 
-    // ===============================
-    // 🧂 MINERAL & SUPLEMEN
-    // ===============================
+    
+    
+    
     case MINERAL_MIX = 'Mineral Mix';
     case MINERAL_BLOK = 'Mineral Blok';
     case GARAM_TERNAK = 'Garam Ternak';
@@ -68,15 +68,15 @@ enum NamaPakan: string
     case PROBIOTIK_TERNAK = 'Probiotik Ternak';
     case EM4_PETERNAKAN = 'EM4 Peternakan';
 
-    // ===============================
-    // 🍼 PAKAN ANAK
-    // ===============================
+    
+    
+    
     case STARTER_KAMBING = 'Starter Kambing';
     case SUSU_REPLACER = 'Susu Bubuk Pengganti Induk';
 
-    // ===============================
-    // 🔥 MAPPING JENIS -> NAMA
-    // ===============================
+    
+    
+    
     public static function byJenis(string $jenis): array
     {
         return match ($jenis) {

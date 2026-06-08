@@ -18,7 +18,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->decimal('jumlah', 12, 2); // kg dipakai
+            $table->decimal('jumlah', 12, 2); 
             $table->date('tanggal');
 
             $table->timestamps();

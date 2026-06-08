@@ -8,17 +8,18 @@ use App\Http\Controllers\Api\FatteningController;
 use App\Http\Controllers\Api\PerkawinanController;  
 use Illuminate\Support\Facades\Route;
 
-// Landing Page API - Tanpa Auth
+
 Route::prefix('v1')->group(function () {
     
-    // Ternak - Untuk menampilkan gallery/koleksi ternak
+    
     Route::prefix('ternak')->group(function () {
         Route::get('/', [TernakController::class, 'index']);
+        Route::get('/featured', [TernakController::class, 'featured']);
         Route::get('/{slug}', [TernakController::class, 'getBySlug']);
         Route::get('/jenis/{jenis}', [TernakController::class, 'byJenis']);
     });
     
-    // Artikel - Untuk konten blog/berita
+    
     Route::prefix('artikel')->group(function () {
         Route::get('/', [ArtikelController::class, 'index']);
         Route::get('/latest', [ArtikelController::class, 'latest']);
@@ -27,14 +28,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/kategori/{kategoriSlug}', [ArtikelController::class, 'byKategori']);
     });
     
-    // Kategori Artikel
+    
     Route::get('/kategori-artikel', [KategoriArtikelController::class, 'index']);
     Route::get('/kategori-artikel/{slug}', [KategoriArtikelController::class, 'show']);
     
-    // Pengaduan - Untuk form kontak/feedback (POST tanpa auth)
+    
     Route::post('/pengaduan', [PengaduanController::class, 'store']);
 });
-// Fattening routes
+
 Route::prefix('fattening')->group(function () {
     Route::get('/', [FatteningController::class, 'index']);
     Route::post('/', [FatteningController::class, 'store']);
@@ -46,7 +47,7 @@ Route::prefix('fattening')->group(function () {
     Route::delete('/{id}', [FatteningController::class, 'destroy']);
 });
 
-// Perkawinan/Breeding routes
+
 Route::prefix('perkawinan')->group(function () {
     Route::get('/', [PerkawinanController::class, 'index']);
     Route::post('/', [PerkawinanController::class, 'store']);

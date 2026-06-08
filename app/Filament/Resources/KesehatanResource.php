@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\KesehatanResource\Pages;
 use App\Models\Kesehatan;
 use App\Models\Ternak;
@@ -10,7 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-// Form Components
+
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -19,7 +20,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 
-// Table Components
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
@@ -31,6 +32,8 @@ use Filament\Tables\Filters\Filter;
 
 class KesehatanResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Kesehatan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-face-smile';

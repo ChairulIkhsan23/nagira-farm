@@ -18,27 +18,27 @@ class TernakFatteningBreedingSeeder extends Seeder
 
     public function run(): void
     {
-        $this->command->info('🚀 Memulai seeder Fattening dan Breeding...');
+        $this->command->info(' Memulai seeder Fattening dan Breeding...');
         
-        // ==================== DATA FATTENING ====================
-        $this->command->info('📊 Membuat data Fattening...');
+        
+        $this->command->info(' Membuat data Fattening...');
         $this->createFatteningData();
         
-        // ==================== DATA BREEDING ====================
-        $this->command->info('🤝 Membuat data Breeding (Perkawinan)...');
+        
+        $this->command->info(' Membuat data Breeding (Perkawinan)...');
         $this->createBreedingData();
         
-        // ==================== DATA REGULAR ====================
-        $this->command->info('📝 Membuat data Regular...');
+        
+        $this->command->info(' Membuat data Regular...');
         $this->createRegularData();
         
-        $this->command->info('✅ Seeder Fattening dan Breeding selesai!');
+        $this->command->info(' Seeder Fattening dan Breeding selesai!');
         $this->printSummary();
     }
     
     private function createFatteningData(): void
     {
-        // Data Fattening Progres
+        
         $fatteningProgres = [
             [
                 'nama' => 'Si Gemuk',
@@ -94,7 +94,7 @@ class TernakFatteningBreedingSeeder extends Seeder
             ]);
         }
         
-        // Fattening Selesai
+        
         $ternakSelesai = Ternak::create([
             'slug' => 'budi-super-selesai',
             'kode_ternak' => $this->generateKode(),
@@ -119,7 +119,7 @@ class TernakFatteningBreedingSeeder extends Seeder
             'keterangan' => 'Program penggemukan sukses, target tercapai',
         ]);
         
-        // Fattening Gagal
+        
         $ternakGagal = Ternak::create([
             'slug' => 'mbah-gemuk-gagal',
             'kode_ternak' => $this->generateKode(),
@@ -147,7 +147,7 @@ class TernakFatteningBreedingSeeder extends Seeder
     
     private function createBreedingData(): void
     {
-        // Buat pejantan
+        
         $pejantan1 = Ternak::create([
             'slug' => 'si-jaka-pejantan',
             'kode_ternak' => $this->generateKode(),
@@ -174,7 +174,7 @@ class TernakFatteningBreedingSeeder extends Seeder
             'status_aktif' => 'aktif',
         ]);
         
-        // Data Breeding Betina
+        
         $breedingData = [
             [
                 'nama' => 'Si Mawar',
@@ -245,7 +245,7 @@ class TernakFatteningBreedingSeeder extends Seeder
             ]);
         }
         
-        // Breeding Gagal
+        
         $betinaGagal = Ternak::create([
             'slug' => 'si-kecil-gagal',
             'kode_ternak' => $this->generateKode(),
@@ -272,7 +272,7 @@ class TernakFatteningBreedingSeeder extends Seeder
     
     private function createRegularData(): void
     {
-        // Buat beberapa ternak regular (tanpa program)
+        
         $regularData = [
             ['nama' => 'Si Putih', 'jenis' => 'Kambing Etawa', 'bobot' => 42],
             ['nama' => 'Si Hitam', 'jenis' => 'Kambing Boer', 'bobot' => 38],
@@ -312,17 +312,17 @@ class TernakFatteningBreedingSeeder extends Seeder
     private function printSummary(): void
     {
         $this->command->info('');
-        $this->command->info('📊 SUMMARY:');
+        $this->command->info(' SUMMARY:');
         $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        $this->command->info("✅ Fattening Progres : " . Fattening::where('status', 'progres')->count() . " ekor");
-        $this->command->info("✅ Fattening Selesai  : " . Fattening::where('status', 'selesai')->count() . " ekor");
-        $this->command->info("✅ Fattening Gagal    : " . Fattening::where('status', 'gagal')->count() . " ekor");
+        $this->command->info(" Fattening Progres : " . Fattening::where('status', 'progres')->count() . " ekor");
+        $this->command->info(" Fattening Selesai  : " . Fattening::where('status', 'selesai')->count() . " ekor");
+        $this->command->info(" Fattening Gagal    : " . Fattening::where('status', 'gagal')->count() . " ekor");
         $this->command->info('');
-        $this->command->info("✅ Breeding Bunting   : " . Perkawinan::where('status_siklus', 'bunting')->count() . " ekor");
-        $this->command->info("✅ Breeding Kawin     : " . Perkawinan::where('status_siklus', 'kawin')->count() . " ekor");
-        $this->command->info("✅ Breeding Melahirkan: " . Perkawinan::where('status_siklus', 'melahirkan')->count() . " ekor");
-        $this->command->info("✅ Breeding Gagal     : " . Perkawinan::where('status_siklus', 'gagal')->count() . " ekor");
+        $this->command->info(" Breeding Bunting   : " . Perkawinan::where('status_siklus', 'bunting')->count() . " ekor");
+        $this->command->info(" Breeding Kawin     : " . Perkawinan::where('status_siklus', 'kawin')->count() . " ekor");
+        $this->command->info(" Breeding Melahirkan: " . Perkawinan::where('status_siklus', 'melahirkan')->count() . " ekor");
+        $this->command->info(" Breeding Gagal     : " . Perkawinan::where('status_siklus', 'gagal')->count() . " ekor");
         $this->command->info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        $this->command->info("📈 Total Ternak      : " . Ternak::count() . " ekor");
+        $this->command->info(" Total Ternak      : " . Ternak::count() . " ekor");
     }
 }

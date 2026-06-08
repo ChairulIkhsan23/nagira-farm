@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\TernakResource\Pages;
 use App\Models\Ternak;
 use App\Enums\JenisTernak;
@@ -12,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\FileUpload;
 
-// Form Components
+
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
@@ -20,7 +21,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 
-// Table Components
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Actions\EditAction;
@@ -32,6 +33,8 @@ use Filament\Tables\Filters\Filter;
 
 class TernakResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Ternak::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
@@ -60,7 +63,7 @@ class TernakResource extends Resource
                                     ->searchable()
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, callable $set) {
-                                        // Trigger generate kode ternak setelah jenis dipilih
+                                        
                                         $set('kode_ternak', Ternak::generateKodeTernak($state));
                                     })
                                     ->columnSpan(1),
@@ -158,7 +161,7 @@ class TernakResource extends Resource
                             ])
                             ->directory('ternak/foto')
                             ->visibility('public')
-                            ->maxSize(2048) // 2MB
+                            ->maxSize(2048) 
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->helperText('Upload foto ternak. Maksimal 2MB. Format: JPG, PNG, WebP')
                             ->columnSpanFull(),
@@ -332,7 +335,7 @@ class TernakResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

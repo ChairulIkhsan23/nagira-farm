@@ -24,9 +24,7 @@ class KategoriArtikel extends Model
         'deleted_at' => 'datetime',
     ];
 
-    /**
-     * Boot the model.
-     */
+    
     protected static function boot()
     {
         parent::boot();
@@ -44,53 +42,41 @@ class KategoriArtikel extends Model
         });
     }
 
-    /**
-     * Get the route key for the model.
-     */
+    
     public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
-    /**
-     * Accessor for published artikels count.
-     */
+    
     public function getPublishedArtikelsCountAttribute(): int
     {
         return $this->artikels()->where('status', 'published')->count();
     }
 
-    /**
-     * Accessor for total artikels count.
-     */
+    
     public function getTotalArtikelsCountAttribute(): int
     {
         return $this->artikels()->count();
     }
 
-    // ===================== RELATIONSHIPS =====================
+    
 
-    /**
-     * Get the artikels for this kategori.
-     */
+    
     public function artikels()
     {
         return $this->hasMany(Artikel::class, 'kategori_id');
     }
 
-    // ===================== SCOPES =====================
+    
 
-    /**
-     * Scope a query to search by name.
-     */
+    
     public function scopeSearch(Builder $query, string $term): Builder
     {
         return $query->where('nama_kategori', 'LIKE', "%{$term}%");
     }
 
-    /**
-     * Scope a query to order by most artikels.
-     */
+    
     public function scopePopular(Builder $query): Builder
     {
         return $query->withCount('artikels')->orderBy('artikels_count', 'desc');

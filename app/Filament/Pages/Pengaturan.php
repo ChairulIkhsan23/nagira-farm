@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasPagePermission;
 use Filament\Pages\Page;
 use Filament\Forms\Form;
 use Filament\Forms\Contracts\HasForms;
@@ -15,11 +16,13 @@ use Illuminate\Support\Facades\Hash;
 
 class Pengaturan extends Page implements HasForms
 {
+    use HasPagePermission;
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static ?string $navigationLabel = 'Pengaturan';
     protected static ?string $navigationGroup = 'Pengaturan';
+    protected static ?string $permissionKey = 'access_pengaturan';
     protected static string $view = 'filament.pages.pengaturan';
     protected static ?int $navigationSort = 1;
 
@@ -106,20 +109,13 @@ class Pengaturan extends Page implements HasForms
         $user = Auth::user();
         $data = $this->form->getState();
 
-        // Handle password
         if (!empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);
         }
-        
-        // Hapus password_confirmation dari data
-        unset($data['password_confirmation']);
 
-        // Handle foto jika ada
-        if (isset($data['foto']) && is_string($data['foto'])) {
-            // Foto sudah dihandle otomatis oleh FileUpload
-        }
+        unset($data['password_confirmation']);
 
         $user->update($data);
 
@@ -129,13 +125,11 @@ class Pengaturan extends Page implements HasForms
             ->send();
     }
 
-    // Optional: Tambahkan method ini untuk mendapatkan title halaman
     public function getTitle(): string
     {
         return 'Pengaturan Akun';
     }
 
-    // Optional: Tambahkan method ini untuk mendapatkan heading halaman
     public function getHeading(): string
     {
         return 'Pengaturan Akun';

@@ -22,10 +22,10 @@ class StatusFatteningChart extends ChartWidget
                 [
                     'data' => [$aktif - $overdue, $overdue, $selesai, $gagal],
                     'backgroundColor' => [
-                        '#3b82f6', // biru - aktif tepat waktu
-                        '#f59e0b', // kuning - overdue
-                        '#22c55e', // hijau - selesai
-                        '#ef4444', // merah - gagal
+                        '#3b82f6', 
+                        '#f59e0b', 
+                        '#22c55e', 
+                        '#ef4444', 
                     ],
                     'borderWidth' => 1,
                 ],

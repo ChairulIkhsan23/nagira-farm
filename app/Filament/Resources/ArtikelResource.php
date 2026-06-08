@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\ArtikelResource\Pages;
 use App\Models\Artikel;
-// Filament Core
+
 use Filament\Resources\Resource;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 
-// Forms
+
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
@@ -19,25 +20,27 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Toggle;
 
-// Tables
+
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 
-// Table Actions
+
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 
-// Laravel
+
 use Illuminate\Database\Eloquent\Builder;
 
-// Relation Managers
+
 use App\Filament\Resources\ArtikelResource\RelationManagers\KomentarsRelationManager;
 
 class ArtikelResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Artikel::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
@@ -46,7 +49,7 @@ class ArtikelResource extends Resource
     protected static ?string $modelLabel = 'Artikel';
     protected static ?string $pluralModelLabel = 'Daftar Artikel';
 
-    // ===================== FORM =====================
+    
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -130,7 +133,7 @@ class ArtikelResource extends Resource
         ]);
     }
 
-    // ===================== TABLE =====================
+    
     public static function table(Table $table): Table
     {
         return $table

@@ -15,7 +15,7 @@ class PakanDistribusiChart extends ChartWidget
 
     protected function getData(): array
     {
-        // Top 5 pakan paling sering digunakan
+        
         $topPakan = PakanTernak::select('pakan_id', DB::raw('COUNT(*) as total'))
             ->with('pakan')
             ->groupBy('pakan_id')

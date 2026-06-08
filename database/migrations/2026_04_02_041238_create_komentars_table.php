@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    
     public function up(): void
     {
         Schema::create('komentars', function (Blueprint $table) {
@@ -18,26 +16,24 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('nama'); // tanpa login pun bisa
+            $table->string('nama'); 
             $table->string('email')->nullable();
 
             $table->text('isi');
 
-            // Reply
+            
             $table->foreignId('parent_id')
                 ->nullable()
                 ->constrained('komentars')
                 ->cascadeOnDelete();
 
-            // Moderasi
+            
             $table->boolean('is_approved')->default(false);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('komentars');

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\PakanResource\Pages;
 use App\Models\Pakan;
 use App\Enums\JenisPakan;
@@ -29,6 +30,8 @@ use Filament\Tables\Actions\DeleteBulkAction;
 
 class PakanResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Pakan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';

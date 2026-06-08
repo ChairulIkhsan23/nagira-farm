@@ -42,9 +42,9 @@ class TernakTerbaru extends BaseWidget
             ]);
     }
 
-    // DIPERBESAR jadi 400px atau 500px
+    
     protected static ?string $maxHeight = '400px';
     
-    // Full width biar lebih dominan
+    
     protected int | string | array $columnSpan = 'full';
 }

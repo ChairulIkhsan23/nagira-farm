@@ -17,18 +17,14 @@ class ResponPengaduanMail extends Mailable
     public string $respon;
     public string $status;
 
-    /**
-     * Create a new message instance.
-     */
+    
     public function __construct(Pengaduan $pengaduan, string $respon)
     {
         $this->pengaduan = $pengaduan;
         $this->respon = $respon;
     }
 
-    /**
-     * Get the message envelope.
-     */
+    
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -36,9 +32,7 @@ class ResponPengaduanMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
+    
     public function content(): Content
     {
         return new Content(

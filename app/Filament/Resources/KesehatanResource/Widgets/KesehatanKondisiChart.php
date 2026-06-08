@@ -9,7 +9,7 @@ class KesehatanKondisiChart extends ChartWidget
 {
     protected static ?string $heading = 'Distribusi Kondisi Ternak';
     
-    // Tambahkan chartId untuk unique
+    
     protected static string $chartId = 'kesehatan-kondisi-chart';
 
     protected function getType(): string
@@ -28,7 +28,7 @@ class KesehatanKondisiChart extends ChartWidget
                         Kesehatan::sakit()->count(),
                         Kesehatan::kritis()->count(),
                     ],
-                    'backgroundColor' => ['#4CAF50', '#FFA500', '#FF4444'], // Hijau, Oranye, Merah
+                    'backgroundColor' => ['#4CAF50', '#FFA500', '#FF4444'], 
                     'borderColor' => ['#45a049', '#FF8C00', '#CC0000'],
                     'borderWidth' => 1,
                 ],

@@ -32,11 +32,11 @@ class CreateFattening extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        // redirect ke halaman daftar pengguna setelah pembuatan
+        
         return $this->getResource()::getUrl('index');
     }
 
-    // additional methods if needed
+    
     protected function afterCreate(): void
     {
         $this->record->ternak?->update([

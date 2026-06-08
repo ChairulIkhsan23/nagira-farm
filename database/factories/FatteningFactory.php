@@ -25,7 +25,7 @@ class FatteningFactory extends Factory
         };
         
         return [
-            'ternak_id' => null, // Akan diisi saat create
+            'ternak_id' => null, 
             'bobot_awal' => $bobotAwal,
             'bobot_terakhir' => $bobotTerakhir,
             'target_bobot' => $targetBobot,

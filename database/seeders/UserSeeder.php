@@ -9,16 +9,13 @@ use App\Models\User;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Admin Utama
-        User::create([
+        $admin = User::query()->updateOrCreate([
+            'email' => 'admin@gmail.com',
+        ], [
             'name' => 'admin',
             'nama_lengkap' => 'Administrator',
-            'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('admin123'),
             'remember_token' => Str::random(10),
@@ -26,11 +23,11 @@ class UserSeeder extends Seeder
             'foto' => null,
         ]);
 
-        // Admin Kedua (opsional)
-        User::create([
+        $chairul = User::query()->updateOrCreate([
+            'email' => 'chairul@nagirafarm.com',
+        ], [
             'name' => 'chairul',
             'nama_lengkap' => 'Chairul Ikhsan',
-            'email' => 'chairul@nagirafarm.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password123'),
             'remember_token' => Str::random(10),
@@ -38,16 +35,20 @@ class UserSeeder extends Seeder
             'foto' => null,
         ]);
 
-        // Super Admin (opsional)
-        User::create([
+        $superadmin = User::query()->updateOrCreate([
+            'email' => 'superadmin@nagirafarm.com',
+        ], [
             'name' => 'superadmin',
             'nama_lengkap' => 'Super Administrator',
-            'email' => 'superadmin@nagirafarm.com',
             'email_verified_at' => now(),
             'password' => Hash::make('super123'),
             'remember_token' => Str::random(10),
             'no_telp' => '081234567892',
             'foto' => null,
         ]);
+
+        $admin->syncRolesBySlug(['admin']);
+        $chairul->syncRolesBySlug(['admin']);
+        $superadmin->syncRolesBySlug(['superadmin']);
     }
 }

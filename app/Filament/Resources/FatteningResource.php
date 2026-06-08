@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Concerns\HasFeaturePermission;
 use App\Filament\Resources\FatteningResource\Pages;
 use App\Models\Fattening;
 use App\Models\Ternak;
@@ -28,6 +29,8 @@ use Filament\Tables\Filters\Filter;
 
 class FatteningResource extends Resource
 {
+    use HasFeaturePermission;
+
     protected static ?string $model = Fattening::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
@@ -51,15 +54,15 @@ class FatteningResource extends Resource
                                 name: 'ternak',
                                 titleAttribute: 'kode_ternak',
                                 modifyQueryUsing: function (Builder $query, $record) {
-                                    // Di edit, include ternak yang lagi dipilih
+                                    
                                     return $query->where('status_aktif', true)
                                         ->where(function ($q) use ($record) {
-                                            // Ternak yang belum punya program
+                                            
                                             $q->whereDoesntHave('programFattening', function (Builder $subQ) {
                                                 $subQ->where('status', 'progres');
                                             });
                                             
-                                            // Include ternak yang lagi diedit
+                                            
                                             if ($record && $record->ternak_id) {
                                                 $q->orWhere('id', $record->ternak_id);
                                             }
@@ -145,7 +148,7 @@ class FatteningResource extends Resource
                             ])
                             ->default('progres')
                             ->native(false)
-                            ->disabled() // Disabled di semua operasi (readonly)
+                            ->disabled() 
                             ->helperText('Status berubah otomatis. Tidak dapat diubah manual.'),
                         
                         Textarea::make('keterangan')
@@ -357,7 +360,7 @@ class FatteningResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 

@@ -17,9 +17,9 @@ class PakanTernak extends Model
 
     protected static function booted()
     {
-    // =========================
-    // CREATE
-    // =========================
+    
+    
+    
     static::creating(function ($model) {
 
         $pakan = Pakan::lockForUpdate()->find($model->pakan_id);
@@ -35,9 +35,9 @@ class PakanTernak extends Model
         $pakan->decrement('stok', $model->jumlah);
     });
 
-    // =========================
-    // UPDATE
-    // =========================
+    
+    
+    
     static::updating(function ($model) {
 
         $jumlahLama = $model->getOriginal('jumlah');
@@ -46,7 +46,7 @@ class PakanTernak extends Model
         $jumlahBaru = $model->jumlah;
         $pakanBaruId = $model->pakan_id;
 
-        // 🔄 Jika ganti pakan
+        
         if ($pakanLamaId != $pakanBaruId) {
 
             $pakanLama = Pakan::lockForUpdate()->find($pakanLamaId);
@@ -76,9 +76,9 @@ class PakanTernak extends Model
         }
     });
 
-    // =========================
-    // DELETE
-    // =========================
+    
+    
+    
     static::deleting(function ($model) {
 
         $pakan = Pakan::lockForUpdate()->find($model->pakan_id);

@@ -9,7 +9,7 @@ class StatusSiklusChart extends ChartWidget
 {
     protected static ?string $heading = 'Statistik Perkawinan';
     
-    // Tambahkan chartId seperti di kelahiran
+    
     protected static string $chartId = 'status-siklus-chart';
 
     protected function getData(): array

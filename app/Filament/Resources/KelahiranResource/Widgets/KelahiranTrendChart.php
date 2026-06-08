@@ -10,7 +10,7 @@ class KelahiranTrendChart extends ChartWidget
 {
     protected static ?string $heading = 'Trend Kelahiran 6 Bulan Terakhir';
     
-    // Tambahkan ini untuk memastikan widget unique
+    
     protected static string $chartId = 'kelahiran-trend-chart';
 
     protected function getData(): array
@@ -48,7 +48,7 @@ class KelahiranTrendChart extends ChartWidget
         return 'line';
     }
     
-    // Tambahkan height tetap
+    
     protected function getHeight(): int
     {
         return 300;
